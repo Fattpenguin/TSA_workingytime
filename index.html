@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f6f7fb">
+<title>我的輪班休假日曆｜2026–2027</title>
+<style>
+:root{color-scheme:light;--ink:#1e293b;--sub:#64748b;--line:#e6eaf0;--bg:#f6f7fb;--white:#fff;--late:#7551d6;--late-bg:#eee8fd;--early:#177c81;--early-bg:#def5f1;--off:#db6a40;--off-bg:#fff0e8}
+*{box-sizing:border-box}body{font-family:ui-sans-serif,system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;margin:0;background:var(--bg);color:var(--ink)}button{font:inherit;cursor:pointer} .wrap{max-width:1060px;margin:auto;padding:30px 20px 54px}
+header{display:flex;gap:18px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}.eyebrow{font-size:12px;letter-spacing:.12em;color:#68758c;font-weight:800;margin-bottom:8px}h1{font-size:clamp(26px,4vw,38px);letter-spacing:-.04em;margin:0 0 10px}.description{margin:0;color:var(--sub);line-height:1.65;font-size:14px}.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{background:white;border:1px solid #dce2ec;color:#344256;padding:10px 14px;border-radius:12px;font-size:14px;font-weight:700;box-shadow:0 2px 8px #20305006}.btn:hover{background:#eef2ff}.btn:focus-visible,.day:focus-visible{outline:3px solid #a7b9ff;outline-offset:2px}.btn.primary{background:#24304b;color:white;border-color:#24304b}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0 18px}.metric{background:white;border:1px solid var(--line);border-radius:18px;padding:17px 19px;box-shadow:0 6px 24px #1c315006}.metric .t{font-size:12px;color:var(--sub);font-weight:600}.metric .n{font-size:29px;font-weight:800;letter-spacing:-.05em;margin-top:6px}.metric .detail{font-size:12px;color:var(--sub)}.legend{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px}.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:100px;background:#fff;border:1px solid var(--line);font-size:12px;color:#526079}.dot{width:9px;height:9px;border-radius:50%;display:inline-block}.late-dot{background:var(--late)}.early-dot{background:var(--early)}.off-dot{background:var(--off)}.calendar{background:white;border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 12px 40px #26334a0a}.cal-top{padding:22px 22px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.month-title{font-size:23px;font-weight:800;letter-spacing:-.035em}.month-sub{font-size:12px;color:var(--sub);margin-top:5px}.month-control{display:flex;align-items:center;gap:8px}.nav{width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:11px;font-size:20px;color:#40506b}.nav:disabled{opacity:.3;cursor:not-allowed}.week,.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.week{background:#f9fafc;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.week div{text-align:center;font-size:12px;color:#758198;font-weight:700;padding:12px 4px}.days{gap:0}.day,.blank{min-height:112px;border-right:1px solid #edf0f5;border-bottom:1px solid #edf0f5}.day:nth-child(7n),.blank:nth-child(7n){border-right:0}.day{appearance:none;background:#fff;border-left:0;border-top:0;display:flex;text-align:left;flex-direction:column;align-items:stretch;padding:11px 9px;gap:8px;position:relative;transition:background .15s}.day:hover{background:#f9fbff}.blank{background:#fbfcfe}.day.inactive{background:#fafbfc;color:#b7c0d0;cursor:default}.num{font-size:13px;font-weight:800;display:flex;align-items:center;gap:5px}.today .num span:first-child{background:#24304b;color:white;border-radius:100px;min-width:25px;height:25px;display:inline-flex;align-items:center;justify-content:center}.shift{border-radius:9px;padding:8px 6px;text-align:center;font-size:12px;font-weight:800;line-height:1.45}.shift small{font-size:11px;font-weight:600;opacity:.8;display:block}.late{background:var(--late-bg);color:var(--late)}.early{background:var(--early-bg);color:var(--early)}.off{background:var(--off-bg);color:var(--off)}.selected{box-shadow:inset 0 0 0 2px #64748b;z-index:1}.details{margin-top:16px;padding:18px 20px;background:white;border:1px solid var(--line);border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.details .name{font-weight:800;font-size:17px}.details .caption{color:var(--sub);font-size:13px;margin-top:5px}.details .tag{font-size:13px;font-weight:800;padding:9px 13px;border-radius:12px}.footer{font-size:12px;line-height:1.8;color:var(--sub);margin-top:22px}.footer strong{color:#42516c}.hidden-print{display:block}
+@media(max-width:700px){.wrap{padding:20px 12px 36px}.summary{grid-template-columns:repeat(2,1fr);gap:9px;margin-top:20px}.metric{padding:14px}.metric .n{font-size:25px}.cal-top{padding:16px 12px}.month-title{font-size:21px}.day,.blank{min-height:82px}.day{padding:8px 3px;gap:6px}.num{font-size:12px;padding-left:5px}.shift{font-size:11px;border-radius:7px;padding:6px 0}.shift small{font-size:9px}.week div{padding:10px 0}.details{padding:15px}.actions{width:100%}.actions .btn{flex:1}}
+@media(max-width:390px){.day,.blank{min-height:74px}.shift{font-size:10px}.shift small{font-size:8px}.day{padding:7px 2px}.num{padding-left:3px}.btn{font-size:12px;padding:9px 10px}}
+@media print{body{background:#fff}.wrap{padding:0;max-width:none}header .actions,.nav,.details,.footer .hint{display:none}.calendar{box-shadow:none}.day,.blank{min-height:90px}.summary{margin:14px 0}.calendar{break-inside:avoid}}
+
+.terminal-chip{display:inline-flex;align-items:center;justify-content:center;border-radius:7px;padding:3px 7px;font-size:11px;font-weight:800;background:#e0edff;color:#24539a;white-space:nowrap}
+.terminal-chip.t2{background:#e8e4fc;color:#6341ab}.terminal-picker{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.terminal-picker select{padding:10px 13px;border:1px solid #d7deea;border-radius:11px;background:#fff;font:inherit;font-size:15px;min-width:120px}.terminal-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.day .terminal-chip{display:flex;align-self:stretch;width:100%;min-width:0;font-size:10px;padding:5px 6px;text-align:center}
+@media(max-width:700px){.details{align-items:stretch}.day .terminal-chip{font-size:9px}}
+/* Personal leave and journal */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0;box-shadow:0 6px 24px #1c315006}
+.panel h2{margin:0 0 7px;font-size:19px}.panel p{margin:0 0 15px;color:var(--sub);font-size:13px;line-height:1.6}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0;font-size:12px;font-weight:700;color:#4b5870}
+.field.wide{grid-column:1/-1}.field input,.field select,.field textarea{width:100%;padding:11px 10px;border:1px solid #d7deea;border-radius:10px;background:white;font:inherit;font-size:15px;color:var(--ink)}
+.field textarea{min-height:100px;resize:vertical;line-height:1.6}.panel .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.panel .controls .btn{box-shadow:none}
+.records{margin-top:14px;display:flex;flex-direction:column;gap:9px}.record{padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fcfdff;display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.record strong{font-size:14px}.record small{color:var(--sub);display:block;font-size:12px;margin-top:4px}.record p{margin:6px 0 0;color:#41516a;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}.record button{padding:5px 9px;border-radius:8px;border:1px solid #dce2ec;background:white;color:#526079;font-size:12px}
+.record-actions{display:flex;gap:5px;flex-shrink:0}.empty{color:var(--sub);font-size:13px;padding:10px}.marker{font-size:10px;line-height:1.3;font-weight:800;border-radius:6px;padding:4px 5px;margin-top:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#fff4ce;color:#805d13}.marker.note{background:#ecf1fe;color:#435ca4}.backup{margin-top:13px;padding-top:13px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center}.backup small{color:var(--sub);font-size:12px;line-height:1.5}
+@media(max-width:700px){.tools{grid-template-columns:1fr}.panel{padding:16px}.marker{font-size:9px}.day{gap:4px}}
+@media print{.tools{display:none}}
+</style>
+</head>
+<body><main class="wrap">
+<header><div><div class="eyebrow">MY SHIFT CALENDAR · 2026–2027</div><h1>我的上班・休假日曆</h1><p class="description">2026/11/17（二）～ 2027/03/22（一）<br>晚班 10:00–18:00 ｜ 早班 06:00–14:00 ｜ 休假</p></div><div class="actions"><button class="btn" id="todayBtn">回到今天</button><button class="btn" id="allBtn">檢視全部月份</button><button class="btn primary" id="icsBtn">匯出到行事曆 .ics</button></div></header>
+<section class="summary" aria-label="班表統計"><div class="metric"><div class="t">排班天數</div><div class="n" id="total">—</div><div class="detail">含起訖日</div></div><div class="metric"><div class="t">晚班</div><div class="n" id="lateCount">—</div><div class="detail">10:00–18:00</div></div><div class="metric"><div class="t">早班</div><div class="n" id="earlyCount">—</div><div class="detail">06:00–14:00</div></div><div class="metric"><div class="t">休假</div><div class="n" id="offCount">—</div><div class="detail">全天休息</div></div></section>
+<div class="legend"><span class="pill"><span class="dot late-dot"></span>晚班 10–18</span><span class="pill"><span class="dot early-dot"></span>早班 06–14</span><span class="pill"><span class="dot off-dot"></span>休假</span><span class="pill">11/17 起連續三天晚班，之後依固定週期循環</span></div>
+<div id="calendars"></div><section class="details" id="details" aria-live="polite"><div><div class="name" id="selectedDate">選擇日期</div><div class="caption" id="selectedDesc">點選月曆上的日期查看班別與設定航廈</div></div><div class="terminal-line"><div class="tag off" id="selectedTag">—</div><label class="terminal-picker"><span style="font-size:12px;color:#64748b;font-weight:700">航廈</span><select id="terminalSelect" aria-label="設定所選日期的航廈"><option value="">未設定</option><option value="一航">一航</option><option value="二航">二航</option></select></label></div></section>
+
+<section class="tools" aria-label="個人請假與速記">
+  <section class="panel" id="leavePanel">
+    <h2>📌 請假與補休紀錄</h2><p>點選月曆日期會自動帶入。事假、病假、補休、榮譽假均可登記；不會覆蓋原本排班。</p>
+    <form id="leaveForm"><div class="fields">
+      <label class="field">日期<input type="date" id="leaveDate" required min="2026-11-17" max="2027-03-22"></label>
+      <label class="field">假別<select id="leaveType"><option>事假</option><option>病假</option><option>補休</option><option>榮譽假</option></select></label>
+      <label class="field">開始時間<input id="leaveStart" type="time" value="06:00" required></label>
+      <label class="field">結束時間<input id="leaveEnd" type="time" value="14:00" required></label>
+      <label class="field wide">備註（選填）<textarea id="leaveMemo" placeholder="例如：申請進度、交接事項" rows="2"></textarea></label>
+    </div><div class="controls"><button class="btn primary" type="submit" id="leaveSubmit">儲存假單紀錄</button><button type="button" class="btn" id="leaveReset">取消編輯</button></div></form>
+    <div id="leaveRecords" class="records" aria-live="polite"></div>
+  </section>
+  <section class="panel" id="notePanel">
+    <h2>📝 速記手札</h2><p>新增時自動帶入日期與現在時間；若先點月曆，日期會使用選取日。可修改、編輯或刪除內容。</p>
+    <form id="noteForm"><div class="fields">
+      <label class="field">日期<input type="date" id="noteDate" required></label>
+      <label class="field">時間<input type="time" id="noteTime" required></label>
+      <label class="field wide">內容<textarea id="noteText" required placeholder="今天有什麼重要的事情要記下？"></textarea></label>
+    </div><div class="controls"><button class="btn primary" type="submit" id="noteSubmit">儲存手札</button><button type="button" class="btn" id="noteReset">新增一則</button></div></form>
+    <div id="noteRecords" class="records" aria-live="polite"></div>
+  </section>
+</section>
+<div class="panel" style="margin:0 0 18px"><strong>資料備份</strong><div class="backup"><button class="btn" id="backupBtn" type="button">下載備份 JSON</button><label class="btn" style="cursor:pointer">匯入備份 JSON<input hidden type="file" id="restoreFile" accept="application/json,.json"></label><small>航廈設定、請假與手札都保存在這台裝置的瀏覽器，不會自動同步至其他手機。清除網站資料可能造成遺失，建議定期下載備份。</small></div></div>
+<div class="footer"><strong>排班規則：</strong>2026/11/17、18、19 為晚班；11/20、21 休假；11/22 起固定循環「晚班 2 天 → 早班 2 天 → 休假 2 天」。排班截至 2027/03/22（含當日）。<span class="hint">「檢視全部月份」可一次瀏覽或列印；「匯出到行事曆」可下載並匯入 Google / Apple / Outlook 行事曆。</span></div>
+</main><script>
+(() => {
+  'use strict';
+  // Date calculation uses UTC noon to avoid local timezone / daylight-saving ambiguity.
+  const DAY = 86400000, start = Date.UTC(2026,10,17,12), end = Date.UTC(2027,2,22,12);
+  const weekdays = ['日','一','二','三','四','五','六'];
+  const pad = n => String(n).padStart(2,'0');
+  const dateAt = ts => new Date(ts);
+  const iso = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`;
+  const fmt = d => `${d.getUTCFullYear()}/${pad(d.getUTCMonth()+1)}/${pad(d.getUTCDate())}（${weekdays[d.getUTCDay()]}）`;
+  function shift(ts){if(ts<start||ts>end)return null; const offset=Math.round((ts-start)/DAY);if(offset<3)return 'late';if(offset<5)return 'off';return ['late','late','early','early','off','off'][(offset-5)%6];}
+  const data = [], byDate=new Map();
+  for(let t=start;t<=end;t+=DAY){const d=dateAt(t),s=shift(t),item={d,t,s,iso:iso(d)};data.push(item);byDate.set(item.iso,item);}
+  const counts = data.reduce((acc,x)=>(acc[x.s]++,acc),{late:0,early:0,off:0});
+  for(const [id,val] of [['total',data.length],['lateCount',counts.late],['earlyCount',counts.early],['offCount',counts.off]])document.getElementById(id).textContent=val+' 天';
+  const todayLocal = new Date(), currentIso = `${todayLocal.getFullYear()}-${pad(todayLocal.getMonth()+1)}-${pad(todayLocal.getDate())}`;
+  let month=0,all=false,selected=byDate.has(currentIso)?currentIso:data[0].iso;
+  const months=[[2026,10],[2026,11],[2027,0],[2027,1],[2027,2]];
+  const calendarRoot=document.getElementById('calendars');
+  const shiftNames={late:'晚班',early:'早班',off:'休假'}, shiftTimes={late:'10:00–18:00',early:'06:00–14:00',off:'全天休假'};
+  function showDetails(key){selected=key;const item=byDate.get(key);if(!item)return;document.getElementById('selectedDate').textContent=fmt(item.d);document.getElementById('selectedDesc').textContent= item.s==='off'?'今天不用上班，好好休息！':`工作時間 ${shiftTimes[item.s]}（8 小時）`;const tag=document.getElementById('selectedTag');tag.className='tag '+item.s;tag.textContent=shiftNames[item.s];document.getElementById('terminalSelect').value=terminals[key]||'';document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));document.querySelectorAll(`[data-date="${key}"]`).forEach(el=>el.classList.add('selected'));if(typeof syncSelection==='function')syncSelection(key);}
+  function makeMonth(y,m,index){
+    const section=document.createElement('section');section.className='calendar';section.style.marginBottom='18px';section.id=`month-${index}`;
+    const top=document.createElement('div');top.className='cal-top';
+    const title=document.createElement('div');title.innerHTML=`<div class="month-title">${y} 年 ${m+1} 月</div><div class="month-sub">點日期可查看班別並設定一航／二航</div>`;
+    const nav=document.createElement('div');nav.className='month-control';if(!all){const prev=document.createElement('button');prev.className='nav';prev.textContent='‹';prev.disabled=index===0;prev.setAttribute('aria-label','上一個月');prev.onclick=()=>{month--;render()};const next=document.createElement('button');next.className='nav';next.textContent='›';next.disabled=index===months.length-1;next.setAttribute('aria-label','下一個月');next.onclick=()=>{month++;render()};nav.append(prev,next)}top.append(title,nav);section.append(top);
+    const week=document.createElement('div');week.className='week';week.innerHTML=weekdays.map(x=>`<div>週${x}</div>`).join('');section.append(week);
+    const days=document.createElement('div');days.className='days';const first=new Date(Date.UTC(y,m,1,12)),offset=first.getUTCDay(),max=new Date(Date.UTC(y,m+1,0,12)).getUTCDate();
+    const numberOfCells=Math.ceil((offset+max)/7)*7;
+    for(let i=0;i<numberOfCells;i++){
+      const n=i-offset+1;if(n<=0||n>max){const blank=document.createElement('div');blank.className='blank';days.append(blank);continue;}
+      const d=new Date(Date.UTC(y,m,n,12)),key=iso(d),item=byDate.get(key);const b=document.createElement('button');b.type='button';b.className='day'+(key===currentIso?' today':'')+(key===selected?' selected':'')+(!item?' inactive':'');b.disabled=!item;
+      if(item){b.dataset.date=key;b.setAttribute('aria-label',`${fmt(d)} ${shiftNames[item.s]} ${shiftTimes[item.s]}`);b.onclick=()=>showDetails(key)}
+      const num=document.createElement('div');num.className='num';const span=document.createElement('span');span.textContent=n;num.append(span);b.append(num);
+      if(item){const sh=document.createElement('div');sh.className='shift '+item.s;sh.innerHTML=shiftNames[item.s]+`<small>${item.s==='late'?'10–18':item.s==='early'?'06–14':'休息'}</small>`;b.append(sh);if(terminals[key]){const terminalMark=document.createElement('span');terminalMark.className='terminal-chip'+(terminals[key]==='二航'?' t2':'');terminalMark.textContent=terminals[key];b.append(terminalMark)}const related=leaves.filter(x=>x.date===key);for(const leave of related.slice(0,2)){const mark=document.createElement('div');mark.className='marker';mark.textContent=leave.type;b.append(mark)}if(notes.some(x=>x.date===key)){const mark=document.createElement('div');mark.className='marker note';mark.textContent='📝 手札';b.append(mark)}}days.append(b);
+    }section.append(days);return section;
+  }
+  function render(){calendarRoot.replaceChildren();const chosen=all?months.map((_,i)=>i):[month];chosen.forEach(i=>calendarRoot.append(makeMonth(...months[i],i)));document.getElementById('allBtn').textContent=all?'單月檢視':'檢視全部月份';showDetails(selected)}
+  document.getElementById('todayBtn').onclick=()=>{const key=byDate.has(currentIso)?currentIso:data[0].iso;const d=byDate.get(key).d;month=months.findIndex(([y,m])=>y===d.getUTCFullYear()&&m===d.getUTCMonth());all=false;render();showDetails(key)};
+  document.getElementById('allBtn').onclick=()=>{all=!all;render()};
+  function icsDate(d,h=0){return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(h)}0000`}
+  function escapeIcs(s){return s.replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;').replace(/\n/g,'\\n')}
+  document.getElementById('icsBtn').onclick=()=>{
+    const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//My Shift Calendar//ZH-TW','CALSCALE:GREGORIAN','X-WR-CALNAME:我的輪班休假日曆'];
+    for(const item of data){const next=new Date(item.t+DAY),isOff=item.s==='off';lines.push('BEGIN:VEVENT',`UID:shift-${item.iso}@personal-calendar`,`DTSTAMP:${stamp}`,isOff?`DTSTART;VALUE=DATE:${icsDate(item.d).slice(0,8)}`:`DTSTART;TZID=Asia/Taipei:${icsDate(item.d,item.s==='late'?10:6)}`,isOff?`DTEND;VALUE=DATE:${icsDate(next).slice(0,8)}`:`DTEND;TZID=Asia/Taipei:${icsDate(item.d,item.s==='late'?18:14)}`,`SUMMARY:${escapeIcs(shiftNames[item.s])}`,`DESCRIPTION:${escapeIcs(shiftTimes[item.s])}`,'END:VEVENT');}
+    lines.push('END:VCALENDAR');const blob=new Blob([lines.join('\r\n')+'\r\n'],{type:'text/calendar;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班休假日曆_20261117-20270322.ics';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+  };
+
+  const STORAGE_KEY='personal-shift-calendar-v2';
+  function loadSaved(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return {leaves:Array.isArray(saved.leaves)?saved.leaves:[],notes:Array.isArray(saved.notes)?saved.notes:[],terminals:saved.terminals&&typeof saved.terminals==='object'&&!Array.isArray(saved.terminals)?saved.terminals:{}};}catch{return {leaves:[],notes:[],terminals:{}}}}
+  const initial=loadSaved();let leaves=initial.leaves,notes=initial.notes,terminals=initial.terminals,editLeave=null,editNote=null;
+  function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({leaves,notes,terminals}))}catch{alert('無法儲存，請確認瀏覽器沒有禁止本機儲存。')}}
+  const $=id=>document.getElementById(id);
+  $('terminalSelect').onchange=e=>{const value=e.target.value;if(value)terminals[selected]=value;else delete terminals[selected];persist();render();};
+  const localNow=()=>{const d=new Date();return {date:`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,time:`${pad(d.getHours())}:${pad(d.getMinutes())}`}};
+  const uniqueId=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function shiftDefaults(date){const item=byDate.get(date);return item?.s==='early'?['06:00','14:00']:item?.s==='late'?['10:00','18:00']:['09:00','17:00']}
+  function syncSelection(key){if(!editLeave){$('leaveDate').value=key;const [a,b]=shiftDefaults(key);$('leaveStart').value=a;$('leaveEnd').value=b}if(!editNote)$('noteDate').value=key;renderRecords()}
+  function renderRecords(){
+    const l=leaves.filter(x=>x.date===selected).sort((a,b)=>a.start.localeCompare(b.start));
+    $('leaveRecords').replaceChildren();if(!l.length)$('leaveRecords').innerHTML='<div class="empty">所選日期沒有請假紀錄</div>';
+    l.forEach(x=>{const box=document.createElement('div');box.className='record';box.innerHTML=`<div><strong>${esc(x.type)}</strong><small>${esc(x.date)} · ${esc(x.start)}–${esc(x.end)}</small><p>${esc(x.memo)}</p></div><div class="record-actions"><button type="button" data-edit="1">編輯</button><button type="button" data-delete="1">刪除</button></div>`;box.querySelector('[data-edit]').onclick=()=>{$('leaveDate').value=x.date;$('leaveType').value=x.type;$('leaveStart').value=x.start;$('leaveEnd').value=x.end;$('leaveMemo').value=x.memo||'';editLeave=x.id;$('leaveSubmit').textContent='更新假單紀錄';$('leavePanel').scrollIntoView({behavior:'smooth'})};box.querySelector('[data-delete]').onclick=()=>{if(confirm('確定刪除這筆請假紀錄嗎？')){leaves=leaves.filter(y=>y.id!==x.id);persist();resetLeave();render();}};$('leaveRecords').append(box)});
+    const ordered=[...notes].sort((a,b)=>(b.date+' '+b.time).localeCompare(a.date+' '+a.time));
+    $('noteRecords').replaceChildren();if(!ordered.length)$('noteRecords').innerHTML='<div class="empty">還沒有速記內容</div>';
+    ordered.forEach(x=>{const box=document.createElement('div');box.className='record';box.innerHTML=`<div><small>${esc(x.date)} · ${esc(x.time)}</small><p>${esc(x.text)}</p></div><div class="record-actions"><button type="button" data-edit="1">編輯</button><button type="button" data-delete="1">刪除</button></div>`;box.querySelector('[data-edit]').onclick=()=>{$('noteDate').value=x.date;$('noteTime').value=x.time;$('noteText').value=x.text;editNote=x.id;$('noteSubmit').textContent='更新手札';$('notePanel').scrollIntoView({behavior:'smooth'})};box.querySelector('[data-delete]').onclick=()=>{if(confirm('確定刪除這則手札嗎？')){notes=notes.filter(y=>y.id!==x.id);persist();resetNote();render();}};$('noteRecords').append(box)});
+  }
+  function resetLeave(){editLeave=null;$('leaveForm').reset();$('leaveDate').value=selected;const [a,b]=shiftDefaults(selected);$('leaveStart').value=a;$('leaveEnd').value=b;$('leaveSubmit').textContent='儲存假單紀錄'}
+  function resetNote(){editNote=null;$('noteForm').reset();$('noteDate').value=selected;$('noteTime').value=localNow().time;$('noteSubmit').textContent='儲存手札'}
+  $('leaveForm').onsubmit=e=>{e.preventDefault();const date=$('leaveDate').value,startTime=$('leaveStart').value,endTime=$('leaveEnd').value;if(endTime<=startTime){alert('結束時間必須晚於開始時間');return}const entry={id:editLeave||uniqueId(),date,type:$('leaveType').value,start:startTime,end:endTime,memo:$('leaveMemo').value.trim()};if(editLeave)leaves=leaves.map(x=>x.id===editLeave?entry:x);else leaves.push(entry);persist();resetLeave();render()};
+  $('noteForm').onsubmit=e=>{e.preventDefault();const entry={id:editNote||uniqueId(),date:$('noteDate').value,time:$('noteTime').value,text:$('noteText').value.trim()};if(!entry.text)return;if(editNote)notes=notes.map(x=>x.id===editNote?entry:x);else notes.push(entry);persist();resetNote();render()};
+  $('leaveReset').onclick=resetLeave;$('noteReset').onclick=resetNote;
+  $('backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),leaves,notes,terminals},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班日曆_請假手札航廈備份.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
+  $('restoreFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text());if(!Array.isArray(payload.leaves)||!Array.isArray(payload.notes))throw Error('格式不符合');if(!confirm('匯入將取代此裝置目前的請假、手札與航廈標籤資料，確定繼續？'))return;terminals={};if(payload.terminals&&typeof payload.terminals==='object'&&!Array.isArray(payload.terminals)){for(const [day,val] of Object.entries(payload.terminals)){if(byDate.has(day)&&['一航','二航'].includes(val))terminals[day]=val}}leaves=payload.leaves.filter(x=>x&&typeof x.date==='string'&&typeof x.type==='string');notes=payload.notes.filter(x=>x&&typeof x.date==='string'&&typeof x.text==='string');persist();resetLeave();resetNote();render();alert('已成功匯入備份')}catch{alert('檔案格式錯誤，請選擇本網站匯出的 JSON 備份')}finally{e.target.value=''}};
+  resetLeave();resetNote();
+
+  const currentItem=byDate.get(currentIso);if(currentItem){month=months.findIndex(([y,m])=>y===currentItem.d.getUTCFullYear()&&m===currentItem.d.getUTCMonth());}render();
+})();
+</script></body></html>
