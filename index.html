@@ -2,8 +2,8 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#f6f7fb">
-<title>我的輪班休假日曆｜2026–2027</title>
+<meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0e1423" media="(prefers-color-scheme: dark)">
+<title>我的輪班日曆｜工作與手札</title>
 <style>
 :root{color-scheme:light;--ink:#1e293b;--sub:#64748b;--line:#e6eaf0;--bg:#f6f7fb;--white:#fff;--late:#7551d6;--late-bg:#eee8fd;--early:#177c81;--early-bg:#def5f1;--off:#db6a40;--off-bg:#fff0e8}
 *{box-sizing:border-box}body{font-family:ui-sans-serif,system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;margin:0;background:var(--bg);color:var(--ink)}button{font:inherit;cursor:pointer} .wrap{max-width:1060px;margin:auto;padding:30px 20px 54px}
@@ -15,6 +15,20 @@ header{display:flex;gap:18px;align-items:flex-start;justify-content:space-betwee
 .terminal-chip{display:inline-flex;align-items:center;justify-content:center;border-radius:7px;padding:3px 7px;font-size:11px;font-weight:800;background:#e0edff;color:#24539a;white-space:nowrap}
 .terminal-chip.t2{background:#e8e4fc;color:#6341ab}.terminal-picker{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.terminal-picker select{padding:10px 13px;border:1px solid #d7deea;border-radius:11px;background:#fff;font:inherit;font-size:15px;min-width:120px}.terminal-line{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.day .terminal-chip{display:flex;align-self:stretch;width:100%;min-width:0;font-size:10px;padding:5px 6px;text-align:center}
 @media(max-width:700px){.details{align-items:stretch}.day .terminal-chip{font-size:9px}}
+/* Cancel an originally scheduled day off */
+.cancelled{background:#e9f3ff;color:#21578b}
+.cancel-marker{background:#dbeafe;color:#1c4c85}
+.cancel-tools{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin-top:12px}
+.cancel-tools label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:700;color:#4b5870}
+.cancel-tools select,.quota-row input{padding:10px;border:1px solid #d7deea;border-radius:10px;background:#fff;color:var(--ink);font:inherit;font-size:14px}
+.cancel-tools select{min-width:118px}
+.month-accounting{padding:12px 20px 18px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:13px}
+.month-accounting span{padding:6px 9px;background:#f5f7fc;border-radius:9px}
+.month-accounting strong{color:#26354b}
+.quota-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.quota-row input{width:76px}
+.account-hint{font-size:11px;color:var(--sub);line-height:1.5;width:100%}
+@media(max-width:700px){.month-accounting{padding:10px 12px 14px}.cancel-tools label{flex:1}.cancel-tools select{min-width:0;width:100%}.cancel-tools .btn{width:100%}}
 /* Personal leave and journal */
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0}
 .panel{background:white;border:1px solid var(--line);border-radius:18px;padding:20px;min-width:0;box-shadow:0 6px 24px #1c315006}
@@ -28,38 +42,195 @@ header{display:flex;gap:18px;align-items:flex-start;justify-content:space-betwee
 .record-actions{display:flex;gap:5px;flex-shrink:0}.empty{color:var(--sub);font-size:13px;padding:10px}.marker{font-size:10px;line-height:1.3;font-weight:800;border-radius:6px;padding:4px 5px;margin-top:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#fff4ce;color:#805d13}.marker.note{background:#ecf1fe;color:#435ca4}.backup{margin-top:13px;padding-top:13px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;align-items:center}.backup small{color:var(--sub);font-size:12px;line-height:1.5}
 @media(max-width:700px){.tools{grid-template-columns:1fr}.panel{padding:16px}.marker{font-size:9px}.day{gap:4px}}
 @media print{.tools{display:none}}
+
+/* Mobile-first navigation: one task at a time. */
+.app-tabs{display:flex;align-items:stretch;gap:6px;padding:6px;background:white;border:1px solid var(--line);border-radius:17px;margin:22px 0 18px;box-shadow:0 6px 24px #1c315008;position:sticky;top:8px;z-index:30}
+.app-tab{flex:1;min-width:0;border:0;background:transparent;border-radius:12px;padding:11px 5px;color:#64748b;font-size:13px;font-weight:750;display:flex;align-items:center;justify-content:center;gap:7px}
+.app-tab.active{background:#24304b;color:white;box-shadow:0 4px 12px #24304b24}
+.tab-icon{font-size:18px;line-height:1}.tab-view[hidden]{display:none!important}.tab-view{min-width:0;animation:page-in .18s ease-out}
+@keyframes page-in{from{opacity:.75;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.section-intro{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:12px 0 15px}.section-kicker{color:#7c8ba5;font-size:10px;letter-spacing:.14em;font-weight:800}.section-intro h2{font-size:23px;letter-spacing:-.04em;margin:3px 0 0}.muted{color:var(--sub);font-size:12px}
+.context-date{background:#eff3f9;padding:12px 14px;border-radius:13px;margin:0 0 14px;color:#52627a;font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}.context-date strong{color:#24304b}.text-btn{border:0;background:transparent;color:#315eb0;font-weight:750;padding:3px 2px;text-decoration:underline}
+.quick-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 22px}.quick-actions .btn{flex:1;min-width:140px}
+.month-accounting-wrap{background:#fff;border-top:1px solid var(--line)}.month-accounting-wrap>summary{cursor:pointer;font-size:13px;color:#4d5d78;font-weight:800;padding:13px 20px;list-style-position:inside}.month-accounting-wrap .month-accounting{border-top:1px solid var(--line)}
+.tab-view[data-view="leave"] .panel,.tab-view[data-view="note"] .panel{max-width:760px}.tab-view[data-view="more"] .panel{max-width:780px}
+@media(max-width:700px){
+.wrap{padding-bottom:100px}.app-tabs{position:fixed;bottom:0;left:0;right:0;top:auto;margin:0;padding:8px 6px max(8px,env(safe-area-inset-bottom));border-radius:17px 17px 0 0;border-bottom:0;box-shadow:0 -4px 24px #1c31501a;z-index:100;gap:2px}
+.app-tab{flex-direction:column;gap:3px;padding:8px 0 7px;font-size:11px}.app-tab.active{box-shadow:none}.tab-icon{font-size:21px}
+header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:12px 0}.metric{padding:11px 6px;border-radius:13px;text-align:center}.metric .t{font-size:10px}.metric .n{font-size:20px;margin-top:2px}.metric .detail{display:none}
+.legend{gap:5px;margin-bottom:10px}.pill{padding:5px 8px;font-size:10px}.legend .pill:last-child{display:none}.quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.quick-actions .btn{min-width:0;padding:10px 2px;font-size:12px}
+.month-accounting-wrap>summary{padding:13px 12px}.tab-view[data-view="cancel"] .panel{margin-top:0!important}
+}
+@media print{.app-tabs,.quick-actions,.context-date{display:none!important}.tab-view[hidden]{display:none!important}}
+.today-nav{font-size:24px;font-weight:700;line-height:1;display:inline-flex;align-items:center;justify-content:center}.today-nav:hover{background:#eef2ff}
+
+.tomorrow-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 17px;margin:0 0 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.tomorrow-card .minor{font-size:12px;color:var(--sub)}.tomorrow-card strong{font-size:16px}.category-tag{display:inline-block;font-weight:750;font-size:11px;border-radius:7px;background:#f0edff;color:#6541a3;padding:3px 8px;margin:3px 0}
+.note-filter{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.note-filter input,.note-filter select,.stats-picker{border:1px solid #d7deea;border-radius:10px;padding:10px 12px;background:white;color:var(--ink);font:inherit;font-size:14px}.note-filter input{flex:1;min-width:130px}.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.stats-card{background:#f7f9fc;border-radius:13px;padding:13px}.stats-card small{color:var(--sub);display:block}.stats-card strong{display:block;font-size:24px;margin-top:3px}
+
+/* Version 6.1: consistent page geometry, a single entry point per action. */
+.wrap{width:100%;max-width:1060px;margin-inline:auto}
+.tab-view{width:100%;max-width:100%;min-width:0}
+.tab-view .panel,.tab-view[data-view="leave"] .panel,.tab-view[data-view="note"] .panel,.tab-view[data-view="more"] .panel{width:100%;max-width:none;margin-left:0;margin-right:0}
+.tab-view .section-intro,.tab-view .calendar,.tab-view .details,.tab-view .tomorrow-card{width:100%;min-width:0}
+.tab-view .fields,.tab-view .record,.tab-view .note-filter{min-width:0}
+.record>div:first-child{min-width:0;flex:1}
+.panel-subtitle{font-size:16px;margin:0 0 10px}
+.extras{margin-top:0!important;margin-bottom:18px}
+.extras .actions{width:100%;display:flex;gap:8px;margin-top:12px}
+.extras .actions .btn{flex:1}
+.tab-view[data-view="more"] .footer{padding:4px 0 8px}
+.context-date{justify-content:flex-start}
+@media(max-width:700px){
+ .wrap{width:100%;padding-inline:12px}
+ .tab-view{width:100%}
+ .tab-view .panel,.tab-view[data-view="cancel"] .panel{width:100%;max-width:100%;margin-top:0!important}
+ .record{flex-wrap:wrap}
+ .record-actions{margin-left:auto}
+ .note-filter>*{min-width:0;max-width:100%}
+ .extras .actions{flex-direction:column}
+ .extras .actions .btn{width:100%}
+}
+/* Automatically follow browser / operating-system appearance. */
+@media(prefers-color-scheme:dark){
+ :root{color-scheme:dark;--ink:#e7edf8;--sub:#a0aec3;--line:#354155;--bg:#0e1423;--white:#1a2435;--late:#c3a9ff;--late-bg:#35264f;--early:#7cd8d2;--early-bg:#173b40;--off:#ffb18d;--off-bg:#493027}
+ body{background:var(--bg);color:var(--ink)}
+ .eyebrow,.section-kicker,.week div{color:#a3b3c9}
+ .btn,.nav,.pill,.calendar,.panel,.metric,.details,.tomorrow-card,.app-tabs{background:var(--white);color:var(--ink);border-color:var(--line);box-shadow:none}
+ .btn:hover,.nav:hover,.today-nav:hover,.day:hover{background:#293953}
+ .btn.primary,.app-tab.active{background:#91aff7;color:#0e1930;border-color:#91aff7;box-shadow:none}
+ .app-tab{color:#a9b6cc}
+ .day{background:var(--white);border-color:#354155;color:var(--ink)}
+ .day.inactive{background:#131c2b;color:#65748d}
+ .blank,.week{background:#141e2e;border-color:var(--line)}
+ .today .num span:first-child{background:#aec7ff;color:#16233b}
+ .selected{box-shadow:inset 0 0 0 2px #a9bfff}
+ .terminal-chip{background:#264568;color:#c2dcff}.terminal-chip.t2{background:#40315e;color:#ddc9ff}
+ .cancelled,.cancel-marker{background:#263c5e;color:#bfdbff}
+ .marker{background:#4c3d18;color:#ffe6a3}.marker.note{background:#2b3b60;color:#d2ddff}
+ .record,.stats-card,.month-accounting span{background:#202c40;border-color:var(--line)}
+ .record p,.record small,.footer strong,.month-accounting strong,.context-date strong{color:#d2dcee}
+ .record button{background:#28374c;color:#d7e0ef;border-color:#45536a}
+ .month-accounting-wrap{background:var(--white);border-color:var(--line)}
+ .month-accounting-wrap>summary{color:#bbcbe1}
+ .context-date{background:#233249;color:#c2cee0}
+ .text-btn{color:#aac9ff}
+ .category-tag{background:#40315e;color:#e4ccff}
+ .terminal-picker select,.cancel-tools select,.quota-row input,.field input,.field select,.field textarea,.note-filter input,.note-filter select,.stats-picker{background:#152032!important;color:var(--ink)!important;border-color:#506078!important}
+ .field,.cancel-tools label,.terminal-picker span{color:#bcc9da!important}
+ input::placeholder,textarea::placeholder{color:#8495b0}
+ .footer{color:var(--sub)}
+}
+
+/* Calendar view choice lives alongside the calendar, not in More. */
+.calendar-view-bar{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:2px 0 12px;min-width:0}
+.view-bar-label{font-size:12px;font-weight:700;color:var(--sub)}
+.calendar-view-bar .btn{box-shadow:none;white-space:nowrap}
+.calendar-view-bar .view-mode.active{background:#24304b;color:#fff;border-color:#24304b}
+@media(prefers-color-scheme:dark){.calendar-view-bar .view-mode.active{background:#91aff7;color:#0e1930;border-color:#91aff7}}
+@media(max-width:700px){.calendar-view-bar{justify-content:space-between}.calendar-view-bar .btn{width:auto;flex:none}}
+@media print{.calendar-view-bar{display:none}}
+
+/* 6.2: clear primary actions, one self-contained leave/duty page. */
+.daily-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0 18px}
+.daily-card{min-width:0;background:var(--white);border:1px solid var(--line);border-radius:18px;padding:17px 18px;box-shadow:0 6px 24px #1c315006}
+.daily-heading{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;align-items:baseline;font-size:13px;color:var(--sub);font-weight:700}
+.daily-heading span{font-weight:850;color:var(--ink)}.daily-heading strong{font-size:12px;color:var(--sub)}
+.daily-shift{font-weight:850;font-size:20px;margin:12px 0 5px;letter-spacing:-.03em;line-height:1.3}
+.daily-meta{font-size:13px;color:var(--sub);min-height:19px}
+.duty-control{margin-bottom:14px}.duty-date-label{max-width:420px}.duty-summary{font-weight:700;color:var(--sub);font-size:13px;margin:9px 0 15px}
+.mode-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding:5px;background:var(--bg);border:1px solid var(--line);border-radius:13px}
+.mode-btn{padding:12px 8px;border:0;background:transparent;color:var(--sub);border-radius:9px;font-weight:800;font-size:14px;cursor:pointer}
+.mode-btn.active{background:var(--white);color:var(--ink);box-shadow:0 2px 10px #1c315014}
+.duty-mode-section[hidden]{display:none!important}.duty-mode-section{margin-top:0!important}.duty-record-title{margin-top:18px}
+.duty-hint{background:var(--bg);color:var(--ink);padding:12px;border-radius:10px;font-size:13px;font-weight:700;margin:12px 0}
+@media(max-width:700px){.daily-cards{gap:8px}.daily-card{padding:12px}.daily-shift{font-size:16px}.daily-heading strong{font-size:10px}.daily-meta{font-size:11px}.app-tabs .app-tab{flex:1}}
+@media(prefers-color-scheme:dark){.mode-btn.active{background:#2b3c55;color:#e7edf8;box-shadow:none}.daily-card{box-shadow:none}}
+/* 6.2.1: cancel-reversal is a first-class action. */
+#cancelRemove[hidden]{display:none!important}
+.danger-action{border-color:#d98f8f;color:#a43d3d}
+.cancel-history{margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
+.cancel-history .record{align-items:center}
+.cancel-history .record-actions{flex-shrink:0}
+@media(prefers-color-scheme:dark){.danger-action{color:#ffb6b6;border-color:#ad6b6b}}
 </style>
 </head>
 <body><main class="wrap">
-<header><div><div class="eyebrow">MY SHIFT CALENDAR · 2026–2027</div><h1>我的上班・休假日曆</h1><p class="description">2026/11/17（二）～ 2027/03/22（一）<br>晚班 10:00–18:00 ｜ 早班 06:00–14:00 ｜ 休假</p></div><div class="actions"><button class="btn" id="todayBtn">回到今天</button><button class="btn" id="allBtn">檢視全部月份</button><button class="btn primary" id="icsBtn">匯出到行事曆 .ics</button></div></header>
-<section class="summary" aria-label="班表統計"><div class="metric"><div class="t">排班天數</div><div class="n" id="total">—</div><div class="detail">含起訖日</div></div><div class="metric"><div class="t">晚班</div><div class="n" id="lateCount">—</div><div class="detail">10:00–18:00</div></div><div class="metric"><div class="t">早班</div><div class="n" id="earlyCount">—</div><div class="detail">06:00–14:00</div></div><div class="metric"><div class="t">休假</div><div class="n" id="offCount">—</div><div class="detail">全天休息</div></div></section>
-<div class="legend"><span class="pill"><span class="dot late-dot"></span>晚班 10–18</span><span class="pill"><span class="dot early-dot"></span>早班 06–14</span><span class="pill"><span class="dot off-dot"></span>休假</span><span class="pill">11/17 起連續三天晚班，之後依固定週期循環</span></div>
-<div id="calendars"></div><section class="details" id="details" aria-live="polite"><div><div class="name" id="selectedDate">選擇日期</div><div class="caption" id="selectedDesc">點選月曆上的日期查看班別與設定航廈</div></div><div class="terminal-line"><div class="tag off" id="selectedTag">—</div><label class="terminal-picker"><span style="font-size:12px;color:#64748b;font-weight:700">航廈</span><select id="terminalSelect" aria-label="設定所選日期的航廈"><option value="">未設定</option><option value="一航">一航</option><option value="二航">二航</option></select></label></div></section>
+<header><div><div class="eyebrow">MY SHIFT CALENDAR · 2026–2027</div><h1>我的上班・休假日曆</h1><p class="description">2026/11/17（二）～ 2027/03/22（一）<br>晚班 10:00–18:00 ｜ 早班 06:00–14:00 ｜ 休假</p></div></header>
+<nav class="app-tabs" aria-label="主要功能">
+<button class="app-tab active" type="button" data-tab="calendar" aria-current="page"><span class="tab-icon">▦</span><span>月曆</span></button>
+<button class="app-tab" type="button" data-tab="duty"><span class="tab-icon">◈</span><span>假勤</span></button>
+<button class="app-tab" type="button" data-tab="note"><span class="tab-icon">✎</span><span>手札</span></button>
+<button class="app-tab" type="button" data-tab="more"><span class="tab-icon">☰</span><span>更多</span></button>
+</nav>
+<div class="tab-view" data-view="calendar">
+<div class="section-intro"><div><span class="section-kicker">SHIFT CALENDAR</span><h2>我的班表</h2></div><span class="muted">點日期查看班別與航廈</span></div>
+<div class="daily-cards" aria-label="今日與明日班表">
+  <article class="daily-card"><div class="daily-heading"><span>今天</span><strong id="todayDate">—</strong></div><div class="daily-shift" id="todayShift">讀取中…</div><div class="daily-meta" id="todayTerminal"></div></article>
+  <article class="daily-card"><div class="daily-heading"><span>明天</span><strong id="tomorrowDate">—</strong></div><div class="daily-shift" id="tomorrowShift">讀取中…</div><div class="daily-meta" id="tomorrowTerminal"></div></article>
+</div>
+<div class="legend"><span class="pill"><span class="dot late-dot"></span>晚班 10–18</span><span class="pill"><span class="dot early-dot"></span>早班 06–14</span><span class="pill"><span class="dot off-dot"></span>休假</span><span class="pill"><span class="dot" style="background:#21578b"></span>銷假上班</span><span class="pill">11/17 起連續三天晚班，之後依固定週期循環</span></div>
+<div class="calendar-view-bar" role="group" aria-label="月曆顯示方式"><span class="view-bar-label">顯示方式</span><button type="button" class="btn view-mode active" id="allBtn" aria-pressed="false">檢視全部月份</button></div><div id="calendars"></div><section class="details" id="details" aria-live="polite"><div><div class="name" id="selectedDate">選擇日期</div><div class="caption" id="selectedDesc">點選月曆上的日期查看班別與設定航廈</div></div><div class="terminal-line"><div class="tag off" id="selectedTag">—</div><label class="terminal-picker"><span style="font-size:12px;color:#64748b;font-weight:700">航廈</span><select id="terminalSelect" aria-label="設定所選日期的航廈"><option value="">未設定</option><option value="一航">一航</option><option value="二航">二航</option></select></label></div></section>
 
-<section class="tools" aria-label="個人請假與速記">
-  <section class="panel" id="leavePanel">
-    <h2>📌 請假與補休紀錄</h2><p>點選月曆日期會自動帶入。事假、病假、補休、榮譽假均可登記；不會覆蓋原本排班。</p>
-    <form id="leaveForm"><div class="fields">
-      <label class="field">日期<input type="date" id="leaveDate" required min="2026-11-17" max="2027-03-22"></label>
+</div>
+<div class="tab-view" data-view="duty" hidden>
+  <div class="section-intro"><div><span class="section-kicker">LEAVE & DUTY</span><h2>假勤管理</h2></div></div>
+  <section class="panel duty-control" aria-label="選擇假勤日期與種類">
+    <label class="field duty-date-label">登記日期<input id="dutyDate" type="date" min="2026-11-17" max="2027-03-22" required></label>
+    <div class="duty-summary" id="dutyShiftSummary" aria-live="polite">選擇日期查看原訂班別</div>
+    <div class="mode-switch" role="group" aria-label="選擇假勤功能">
+      <button type="button" class="mode-btn active" data-duty-mode="leave" aria-pressed="true">請假／補休</button>
+      <button type="button" class="mode-btn" data-duty-mode="cancel" aria-pressed="false">銷假上班</button>
+    </div>
+  </section>
+  <section class="panel duty-mode-section" id="leavePanel" data-duty-panel="leave">
+    <h3 class="panel-subtitle">登記請假／補休</h3>
+    <p>選擇日期、假別和時段。日期直接在本頁調整，不必先去月曆選日期。</p>
+    <form id="leaveForm"><input type="hidden" id="leaveDate"><div class="fields">
       <label class="field">假別<select id="leaveType"><option>事假</option><option>病假</option><option>補休</option><option>榮譽假</option></select></label>
       <label class="field">開始時間<input id="leaveStart" type="time" value="06:00" required></label>
       <label class="field">結束時間<input id="leaveEnd" type="time" value="14:00" required></label>
       <label class="field wide">備註（選填）<textarea id="leaveMemo" placeholder="例如：申請進度、交接事項" rows="2"></textarea></label>
     </div><div class="controls"><button class="btn primary" type="submit" id="leaveSubmit">儲存假單紀錄</button><button type="button" class="btn" id="leaveReset">取消編輯</button></div></form>
+    <h3 class="panel-subtitle duty-record-title">這一天的請假紀錄</h3>
     <div id="leaveRecords" class="records" aria-live="polite"></div>
   </section>
-  <section class="panel" id="notePanel">
-    <h2>📝 速記手札</h2><p>新增時自動帶入日期與現在時間；若先點月曆，日期會使用選取日。可修改、編輯或刪除內容。</p>
+  <section class="panel duty-mode-section" id="cancelPanel" data-duty-panel="cancel" hidden>
+    <h3 class="panel-subtitle">銷假上班</h3>
+    <p>僅原排休假日可登記。會保留原始排班週期，也可以撤銷。</p>
+    <div id="cancelInfo" class="duty-hint" aria-live="polite"></div>
+    <div class="cancel-tools">
+      <label>實際班別<select id="cancelShift"><option value="early">早班 06:00–14:00</option><option value="late">晚班 10:00–18:00</option></select></label>
+      <label>工作航廈<select id="cancelTerminal"><option value="">未設定</option><option value="一航">一航</option><option value="二航">二航</option></select></label>
+      <button class="btn primary" id="cancelSave" type="button">登記銷假上班</button>
+      <button class="btn danger-action" id="cancelRemove" type="button" hidden>撤銷銷假・恢復休假</button>
+      <div id="cancelStatus" role="status" aria-live="polite" hidden style="width:100%;font-size:13px;font-weight:700;color:var(--ink)"></div>
+    </div>
+    <div class="cancel-history" aria-live="polite"><h3 class="panel-subtitle">已登記銷假</h3><div id="cancelRecords" class="records"></div></div>
+  </section>
+</div>
+<div class="tab-view" data-view="note" hidden>
+<div class="section-intro"><div><span class="section-kicker">QUICK JOURNAL</span><h2>速記手札</h2></div></div>
+<section class="panel" id="notePanel">
+    <h3 class="panel-subtitle">新增或編輯手札</h3><p>新增時自動帶入日期與現在時間；若先點月曆，日期會使用選取日。可修改、編輯或刪除內容。</p>
     <form id="noteForm"><div class="fields">
       <label class="field">日期<input type="date" id="noteDate" required></label>
       <label class="field">時間<input type="time" id="noteTime" required></label>
+      <label class="field">分類<select id="noteCategory"><option>未分類</option><option>趣事</option><option>安檢</option><option>心得</option></select></label>
       <label class="field wide">內容<textarea id="noteText" required placeholder="今天有什麼重要的事情要記下？"></textarea></label>
     </div><div class="controls"><button class="btn primary" type="submit" id="noteSubmit">儲存手札</button><button type="button" class="btn" id="noteReset">新增一則</button></div></form>
-    <div id="noteRecords" class="records" aria-live="polite"></div>
-  </section>
+    <div class="note-filter"><select id="noteFilter" aria-label="依手札分類篩選"><option value="all">全部分類</option><option>未分類</option><option>趣事</option><option>安檢</option><option>心得</option></select><input id="noteSearch" type="search" placeholder="搜尋手札內容" aria-label="搜尋手札內容"></div><div id="noteRecords" class="records" aria-live="polite"></div>
 </section>
-<div class="panel" style="margin:0 0 18px"><strong>資料備份</strong><div class="backup"><button class="btn" id="backupBtn" type="button">下載備份 JSON</button><label class="btn" style="cursor:pointer">匯入備份 JSON<input hidden type="file" id="restoreFile" accept="application/json,.json"></label><small>航廈設定、請假與手札都保存在這台裝置的瀏覽器，不會自動同步至其他手機。清除網站資料可能造成遺失，建議定期下載備份。</small></div></div>
-<div class="footer"><strong>排班規則：</strong>2026/11/17、18、19 為晚班；11/20、21 休假；11/22 起固定循環「晚班 2 天 → 早班 2 天 → 休假 2 天」。排班截至 2027/03/22（含當日）。<span class="hint">「檢視全部月份」可一次瀏覽或列印；「匯出到行事曆」可下載並匯入 Google / Apple / Outlook 行事曆。</span></div>
+</div>
+<div class="tab-view" data-view="more" hidden>
+<div class="section-intro"><div><span class="section-kicker">SETTINGS & BACKUP</span><h2>更多工具</h2></div></div>
+<section class="summary" aria-label="班表統計"><div class="metric"><div class="t">排班天數</div><div class="n" id="total">—</div><div class="detail">含起訖日</div></div><div class="metric"><div class="t">晚班</div><div class="n" id="lateCount">—</div><div class="detail">10:00–18:00</div></div><div class="metric"><div class="t">早班</div><div class="n" id="earlyCount">—</div><div class="detail">06:00–14:00</div></div><div class="metric"><div class="t">原排休假</div><div class="n" id="offCount">—</div><div class="detail">尚未扣除銷假</div></div></section>
+
+<div class="panel" style="margin:0 0 18px"><strong>工作統計</strong><p>統計實際班別（含銷假上班）與一航、二航的分布；未設定航廈另計。</p><label class="field">統計月份<select id="statsMonth" class="stats-picker"><option value="all">完整排班期間</option><option value="2026-11">2026 年 11 月</option><option value="2026-12">2026 年 12 月</option><option value="2027-01">2027 年 1 月</option><option value="2027-02">2027 年 2 月</option><option value="2027-03">2027 年 3 月</option></select></label><div id="statsResults" class="stats-grid"></div></div>
+<div class="panel" style="margin:0 0 18px"><strong>行事曆匯出</strong><p>將班表下載為 .ics，匯入 Google、Apple 或 Outlook 行事曆。</p><button class="btn primary" id="icsBtn" type="button">匯出到行事曆 .ics</button></div>
+<div class="panel" style="margin:0 0 18px"><strong>資料備份</strong><div class="backup"><button class="btn" id="backupBtn" type="button">下載備份 JSON</button><label class="btn" style="cursor:pointer">匯入備份 JSON<input hidden type="file" id="restoreFile" accept="application/json,.json"></label><small>航廈設定、銷假、每月應休額度、請假與手札都保存在這台裝置的瀏覽器，不會自動同步至其他手機。清除網站資料可能造成遺失，建議定期下載備份。</small></div></div>
+<div class="footer"><strong>排班規則：</strong>2026/11/17、18、19 為晚班；11/20、21 休假；11/22 起固定循環「晚班 2 天 → 早班 2 天 → 休假 2 天」。排班截至 2027/03/22（含當日）。<span class="hint">「單月／全部月份」可在月曆頁面切換；行事曆匯出在「更多」。</span></div>
+</div>
 </main><script>
 (() => {
   'use strict';
@@ -80,41 +251,107 @@ header{display:flex;gap:18px;align-items:flex-start;justify-content:space-betwee
   const months=[[2026,10],[2026,11],[2027,0],[2027,1],[2027,2]];
   const calendarRoot=document.getElementById('calendars');
   const shiftNames={late:'晚班',early:'早班',off:'休假'}, shiftTimes={late:'10:00–18:00',early:'06:00–14:00',off:'全天休假'};
-  function showDetails(key){selected=key;const item=byDate.get(key);if(!item)return;document.getElementById('selectedDate').textContent=fmt(item.d);document.getElementById('selectedDesc').textContent= item.s==='off'?'今天不用上班，好好休息！':`工作時間 ${shiftTimes[item.s]}（8 小時）`;const tag=document.getElementById('selectedTag');tag.className='tag '+item.s;tag.textContent=shiftNames[item.s];document.getElementById('terminalSelect').value=terminals[key]||'';document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));document.querySelectorAll(`[data-date="${key}"]`).forEach(el=>el.classList.add('selected'));if(typeof syncSelection==='function')syncSelection(key);}
+  function actualShift(item){return item.s==='off'&&cancelled[item.iso]?cancelled[item.iso].shift:item.s}
+  function showDetails(key){selected=key;const item=byDate.get(key);if(!item)return;const effective=actualShift(item),isCancelled=item.s==='off'&&!!cancelled[key];document.getElementById('selectedDate').textContent=fmt(item.d);document.getElementById('selectedDesc').textContent=isCancelled?`原排休假 → 銷假上班 ${shiftTimes[effective]}（8 小時）`:effective==='off'?'今天不用上班，好好休息！':`工作時間 ${shiftTimes[effective]}（8 小時）`;const tag=document.getElementById('selectedTag');tag.className='tag '+(isCancelled?'cancelled':effective);tag.textContent=isCancelled?`銷假・${shiftNames[effective]}`:shiftNames[effective];const terminalPicker=document.getElementById('terminalSelect');terminalPicker.disabled=effective==='off';terminalPicker.value=effective==='off'?'':terminals[key]||'';terminalPicker.title=effective==='off'?'休假日不可設定航廈；請先至假勤登記銷假上班。':'設定工作航廈';document.getElementById('dutyDate').value=key;document.getElementById('dutyShiftSummary').textContent=`${fmt(item.d)}｜原排${shiftNames[item.s]}${isCancelled?'，已銷假':''}`;document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));document.querySelectorAll(`[data-date="${key}"]`).forEach(el=>el.classList.add('selected'));$('cancelShift').value=cancelled[key]?.shift||'early';$('cancelTerminal').value=terminals[key]||'';$('cancelInfo').textContent=item.s==='off'?(isCancelled?'這一天已銷假上班，可修改班別或撤銷。':'這一天原排休假，可選擇銷假上班。'):'這一天原排上班，無須銷假。';$('cancelShift').disabled=item.s!=='off';$('cancelTerminal').disabled=item.s!=='off';$('cancelSave').disabled=item.s!=='off';$('cancelSave').textContent=isCancelled?'更新銷假上班':'登記銷假上班';$('cancelRemove').hidden=!isCancelled;if(typeof syncSelection==='function')syncSelection(key);}
   function makeMonth(y,m,index){
     const section=document.createElement('section');section.className='calendar';section.style.marginBottom='18px';section.id=`month-${index}`;
     const top=document.createElement('div');top.className='cal-top';
-    const title=document.createElement('div');title.innerHTML=`<div class="month-title">${y} 年 ${m+1} 月</div><div class="month-sub">點日期可查看班別並設定一航／二航</div>`;
-    const nav=document.createElement('div');nav.className='month-control';if(!all){const prev=document.createElement('button');prev.className='nav';prev.textContent='‹';prev.disabled=index===0;prev.setAttribute('aria-label','上一個月');prev.onclick=()=>{month--;render()};const next=document.createElement('button');next.className='nav';next.textContent='›';next.disabled=index===months.length-1;next.setAttribute('aria-label','下一個月');next.onclick=()=>{month++;render()};nav.append(prev,next)}top.append(title,nav);section.append(top);
+    const title=document.createElement('div');title.innerHTML=`<div class="month-title">${y} 年 ${m+1} 月</div><div class="month-sub">點日期查看班別與設定航廈；請假、銷假請至「假勤」</div>`;
+    const nav=document.createElement('div');nav.className='month-control';if(!all){const todayIcon=document.createElement('button');todayIcon.type='button';todayIcon.className='nav today-nav';todayIcon.innerHTML='⌖';todayIcon.title='回到今天';todayIcon.setAttribute('aria-label','回到今天');todayIcon.onclick=()=>navigateToday();nav.append(todayIcon);const prev=document.createElement('button');prev.className='nav';prev.textContent='‹';prev.disabled=index===0;prev.setAttribute('aria-label','上一個月');prev.onclick=()=>{month--;render()};const next=document.createElement('button');next.className='nav';next.textContent='›';next.disabled=index===months.length-1;next.setAttribute('aria-label','下一個月');next.onclick=()=>{month++;render()};nav.append(prev,next)}top.append(title,nav);section.append(top);
     const week=document.createElement('div');week.className='week';week.innerHTML=weekdays.map(x=>`<div>週${x}</div>`).join('');section.append(week);
     const days=document.createElement('div');days.className='days';const first=new Date(Date.UTC(y,m,1,12)),offset=first.getUTCDay(),max=new Date(Date.UTC(y,m+1,0,12)).getUTCDate();
     const numberOfCells=Math.ceil((offset+max)/7)*7;
     for(let i=0;i<numberOfCells;i++){
       const n=i-offset+1;if(n<=0||n>max){const blank=document.createElement('div');blank.className='blank';days.append(blank);continue;}
       const d=new Date(Date.UTC(y,m,n,12)),key=iso(d),item=byDate.get(key);const b=document.createElement('button');b.type='button';b.className='day'+(key===currentIso?' today':'')+(key===selected?' selected':'')+(!item?' inactive':'');b.disabled=!item;
-      if(item){b.dataset.date=key;b.setAttribute('aria-label',`${fmt(d)} ${shiftNames[item.s]} ${shiftTimes[item.s]}`);b.onclick=()=>showDetails(key)}
+      if(item){b.dataset.date=key;b.setAttribute('aria-label',`${fmt(d)} ${shiftNames[actualShift(item)]} ${shiftTimes[actualShift(item)]}`);b.onclick=()=>showDetails(key)}
       const num=document.createElement('div');num.className='num';const span=document.createElement('span');span.textContent=n;num.append(span);b.append(num);
-      if(item){const sh=document.createElement('div');sh.className='shift '+item.s;sh.innerHTML=shiftNames[item.s]+`<small>${item.s==='late'?'10–18':item.s==='early'?'06–14':'休息'}</small>`;b.append(sh);if(terminals[key]){const terminalMark=document.createElement('span');terminalMark.className='terminal-chip'+(terminals[key]==='二航'?' t2':'');terminalMark.textContent=terminals[key];b.append(terminalMark)}const related=leaves.filter(x=>x.date===key);for(const leave of related.slice(0,2)){const mark=document.createElement('div');mark.className='marker';mark.textContent=leave.type;b.append(mark)}if(notes.some(x=>x.date===key)){const mark=document.createElement('div');mark.className='marker note';mark.textContent='📝 手札';b.append(mark)}}days.append(b);
-    }section.append(days);return section;
+      if(item){const effective=actualShift(item),isCancelled=item.s==='off'&&!!cancelled[key];const sh=document.createElement('div');sh.className='shift '+(isCancelled?'cancelled':effective);sh.textContent=isCancelled?`銷假 ${shiftNames[effective]}`:shiftNames[effective];const time=document.createElement('small');time.textContent=effective==='late'?'10–18':effective==='early'?'06–14':'休息';sh.append(time);b.append(sh);if(effective!=='off'&&terminals[key]){const terminalMark=document.createElement('span');terminalMark.className='terminal-chip'+(terminals[key]==='二航'?' t2':'');terminalMark.textContent=terminals[key];b.append(terminalMark)}const related=leaves.filter(x=>x.date===key);for(const leave of related.slice(0,2)){const mark=document.createElement('div');mark.className='marker';mark.textContent=leave.type;b.append(mark)}if(notes.some(x=>x.date===key)){const mark=document.createElement('div');mark.className='marker note';mark.textContent='📝 手札';b.append(mark)}}days.append(b);
+    }section.append(days);
+    const monthly=data.filter(item=>item.d.getUTCFullYear()===y&&item.d.getUTCMonth()===m),original=monthly.filter(x=>x.s==='off').length,used=monthly.filter(x=>x.s==='off'&&cancelled[x.iso]).length,remaining=original-used;
+    const account=document.createElement('div');account.className='month-accounting';const key=`${y}-${pad(m+1)}`;const quota=quotas[key];
+    account.innerHTML=`<span>原排休假 <strong>${original}</strong> 天</span><span>銷假上班 <strong>${used}</strong> 天</span><span>實際休假 <strong>${remaining}</strong> 天</span><label class="quota-row">本月應休 <input type="number" min="0" max="31" step="1" aria-label="${y}年${m+1}月應休天數" placeholder="未設定" value="${Number.isInteger(quota)?quota:''}"> 天</label><span class="quota-status"></span><div class="account-hint">應休天數請依單位認定填寫；本表 11 月及 3 月僅涵蓋部分月份，不宜與整月應休額度直接比較。</div>`;
+    const input=account.querySelector('input'),status=account.querySelector('.quota-status');const syncQuota=()=>{const v=quotas[key];status.textContent=Number.isInteger(v)?(remaining>v?`尚可銷假 ${remaining-v} 天`:remaining<v?`實休較應休少 ${v-remaining} 天`:'已符合應休天數'):'未設定應休標準';};syncQuota();input.onchange=()=>{const raw=input.value;if(raw==='' ){delete quotas[key]}else if(!/^\d+$/.test(raw)||Number(raw)>31){alert('請輸入 0–31 天');input.value=Number.isInteger(quotas[key])?quotas[key]:'';return}else{quotas[key]=Number(raw)}persist();syncQuota()};const fold=document.createElement('details');fold.className='month-accounting-wrap';const summary=document.createElement('summary');summary.textContent='查看每月休假統計與應休額度';fold.append(summary,account);section.append(fold);return section;
   }
-  function render(){calendarRoot.replaceChildren();const chosen=all?months.map((_,i)=>i):[month];chosen.forEach(i=>calendarRoot.append(makeMonth(...months[i],i)));document.getElementById('allBtn').textContent=all?'單月檢視':'檢視全部月份';showDetails(selected)}
-  document.getElementById('todayBtn').onclick=()=>{const key=byDate.has(currentIso)?currentIso:data[0].iso;const d=byDate.get(key).d;month=months.findIndex(([y,m])=>y===d.getUTCFullYear()&&m===d.getUTCMonth());all=false;render();showDetails(key)};
+  function render(){calendarRoot.replaceChildren();const chosen=all?months.map((_,i)=>i):[month];chosen.forEach(i=>calendarRoot.append(makeMonth(...months[i],i)));document.getElementById('allBtn').textContent=all?'返回單月':'檢視全部月份';document.getElementById('allBtn').setAttribute('aria-pressed',String(all));document.getElementById('allBtn').classList.toggle('active',all);showDetails(selected);renderCancelRecords();renderStats();renderTomorrow()}
+  function navigateToday(){const key=byDate.has(currentIso)?currentIso:data[0].iso;const d=byDate.get(key).d;month=months.findIndex(([y,m])=>y===d.getUTCFullYear()&&m===d.getUTCMonth());all=false;render();showDetails(key)}
   document.getElementById('allBtn').onclick=()=>{all=!all;render()};
   function icsDate(d,h=0){return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(h)}0000`}
   function escapeIcs(s){return s.replace(/\\/g,'\\\\').replace(/,/g,'\\,').replace(/;/g,'\\;').replace(/\n/g,'\\n')}
   document.getElementById('icsBtn').onclick=()=>{
     const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
     const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//My Shift Calendar//ZH-TW','CALSCALE:GREGORIAN','X-WR-CALNAME:我的輪班休假日曆'];
-    for(const item of data){const next=new Date(item.t+DAY),isOff=item.s==='off';lines.push('BEGIN:VEVENT',`UID:shift-${item.iso}@personal-calendar`,`DTSTAMP:${stamp}`,isOff?`DTSTART;VALUE=DATE:${icsDate(item.d).slice(0,8)}`:`DTSTART;TZID=Asia/Taipei:${icsDate(item.d,item.s==='late'?10:6)}`,isOff?`DTEND;VALUE=DATE:${icsDate(next).slice(0,8)}`:`DTEND;TZID=Asia/Taipei:${icsDate(item.d,item.s==='late'?18:14)}`,`SUMMARY:${escapeIcs(shiftNames[item.s])}`,`DESCRIPTION:${escapeIcs(shiftTimes[item.s])}`,'END:VEVENT');}
+    for(const item of data){const next=new Date(item.t+DAY),effective=actualShift(item),isOff=effective==='off',isCancelled=item.s==='off'&&!isOff;lines.push('BEGIN:VEVENT',`UID:shift-${item.iso}@personal-calendar`,`DTSTAMP:${stamp}`,isOff?`DTSTART;VALUE=DATE:${icsDate(item.d).slice(0,8)}`:`DTSTART;TZID=Asia/Taipei:${icsDate(item.d,effective==='late'?10:6)}`,isOff?`DTEND;VALUE=DATE:${icsDate(next).slice(0,8)}`:`DTEND;TZID=Asia/Taipei:${icsDate(item.d,effective==='late'?18:14)}`,`SUMMARY:${escapeIcs(isCancelled?'銷假上班・'+shiftNames[effective]:shiftNames[effective])}`,`DESCRIPTION:${escapeIcs((isCancelled?'原排休假，銷假上班。':'')+shiftTimes[effective]+(terminals[item.iso]?'；'+terminals[item.iso]:''))}`,'END:VEVENT');}
     lines.push('END:VCALENDAR');const blob=new Blob([lines.join('\r\n')+'\r\n'],{type:'text/calendar;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班休假日曆_20261117-20270322.ics';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
   };
 
   const STORAGE_KEY='personal-shift-calendar-v2';
-  function loadSaved(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return {leaves:Array.isArray(saved.leaves)?saved.leaves:[],notes:Array.isArray(saved.notes)?saved.notes:[],terminals:saved.terminals&&typeof saved.terminals==='object'&&!Array.isArray(saved.terminals)?saved.terminals:{}};}catch{return {leaves:[],notes:[],terminals:{}}}}
-  const initial=loadSaved();let leaves=initial.leaves,notes=initial.notes,terminals=initial.terminals,editLeave=null,editNote=null;
-  function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify({leaves,notes,terminals}))}catch{alert('無法儲存，請確認瀏覽器沒有禁止本機儲存。')}}
+  function loadSaved(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return {leaves:Array.isArray(saved.leaves)?saved.leaves:[],notes:Array.isArray(saved.notes)?saved.notes:[],terminals:saved.terminals&&typeof saved.terminals==='object'&&!Array.isArray(saved.terminals)?saved.terminals:{},cancelled:saved.cancelled&&typeof saved.cancelled==='object'&&!Array.isArray(saved.cancelled)?saved.cancelled:{},quotas:saved.quotas&&typeof saved.quotas==='object'&&!Array.isArray(saved.quotas)?saved.quotas:{}};}catch{return {leaves:[],notes:[],terminals:{},cancelled:{},quotas:{}}}}
+  const initial=loadSaved();let leaves=initial.leaves,notes=initial.notes,terminals=initial.terminals,cancelled=initial.cancelled,quotas=initial.quotas,editLeave=null,editNote=null;
+  function cleanOffTerminals(){for(const key of Object.keys(terminals)){const item=byDate.get(key);if(!item||actualShift(item)==='off'||!['一航','二航'].includes(terminals[key]))delete terminals[key];}}
+  function persist(){cleanOffTerminals();try{localStorage.setItem(STORAGE_KEY,JSON.stringify({leaves,notes,terminals,cancelled,quotas}))}catch{alert('無法儲存，請確認瀏覽器沒有禁止本機儲存。')}}
+  function renderStats(){const choice=$('statsMonth')?.value||'all';const items=data.filter(x=>choice==='all'||x.iso.startsWith(choice));const count={early:0,late:0,off:0,t1:0,t2:0,unknown:0,cancel:0};for(const x of items){const sh=actualShift(x);count[sh]++;if(x.s==='off'&&sh!=='off')count.cancel++;if(sh!=='off'){if(terminals[x.iso]==='一航')count.t1++;else if(terminals[x.iso]==='二航')count.t2++;else count.unknown++;}}const cards=[['早班',count.early],['晚班',count.late],['實際休假',count.off],['銷假上班',count.cancel],['一航勤務',count.t1],['二航勤務',count.t2],['航廈未設定',count.unknown],['實際勤務時數',(count.early+count.late)*8+' 小時']];$('statsResults').innerHTML=cards.map(([name,n])=>`<div class="stats-card"><small>${name}</small><strong>${n}</strong></div>`).join('')}
+  function renderTomorrow(){
+    const now=new Date();
+    const localIso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const describe=(day,shiftId,dateId,terminalId)=>{
+      const key=localIso(day),item=byDate.get(key);
+      $(dateId).textContent=`${pad(day.getMonth()+1)}/${pad(day.getDate())}（${weekdays[day.getDay()]}）`;
+      if(!item){$(shiftId).textContent='排班範圍外';$(terminalId).textContent='';return;}
+      const shiftCode=actualShift(item),cancel=item.s==='off'&&shiftCode!=='off';
+      $(shiftId).textContent=`${cancel?'銷假・':''}${shiftNames[shiftCode]}｜${shiftTimes[shiftCode]}`;
+      $(terminalId).textContent=shiftCode==='off'?'休息日':terminals[key]||'航廈未設定';
+    };
+    describe(now,'todayShift','todayDate','todayTerminal');
+    describe(new Date(now.getFullYear(),now.getMonth(),now.getDate()+1),'tomorrowShift','tomorrowDate','tomorrowTerminal');
+  }
   const $=id=>document.getElementById(id);
-  $('terminalSelect').onchange=e=>{const value=e.target.value;if(value)terminals[selected]=value;else delete terminals[selected];persist();render();};
+
+  $('dutyDate').addEventListener('change',e=>{
+    const key=e.target.value;
+    if(!byDate.has(key)){alert('請選擇排班範圍內的日期');e.target.value=selected;return;}
+    if(editLeave)resetLeave();
+    showDetails(key);
+    const d=byDate.get(key).d;
+    month=months.findIndex(([y,m])=>y===d.getUTCFullYear()&&m===d.getUTCMonth());
+  });
+  function setDutyMode(mode){
+    document.querySelectorAll('[data-duty-mode]').forEach(btn=>{
+      const active=btn.dataset.dutyMode===mode;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));
+    });
+    document.querySelectorAll('[data-duty-panel]').forEach(el=>el.hidden=el.dataset.dutyPanel!==mode);
+  }
+  document.querySelectorAll('[data-duty-mode]').forEach(btn=>btn.addEventListener('click',()=>setDutyMode(btn.dataset.dutyMode)));
+  $('statsMonth').addEventListener('change',renderStats);
+  function renderCancelRecords(){
+    const root=$('cancelRecords');if(!root)return;
+    root.replaceChildren();
+    const entries=Object.entries(cancelled).filter(([key,val])=>byDate.get(key)?.s==='off'&&['early','late'].includes(val?.shift)).sort(([a],[b])=>a.localeCompare(b));
+    if(!entries.length){root.innerHTML='<div class="empty">目前沒有銷假紀錄</div>';return;}
+    for(const [key,val] of entries){
+      const record=document.createElement('div');record.className='record';
+      record.innerHTML=`<div><strong>${esc(key)}｜銷假${esc(shiftNames[val.shift])}</strong><small>${esc(shiftTimes[val.shift])}${terminals[key]?' · '+esc(terminals[key]):''}</small></div><div class="record-actions"><button type="button" data-select>查看／修改</button><button type="button" data-revert>撤銷銷假</button></div>`;
+      record.querySelector('[data-select]').onclick=()=>showDetails(key);
+      record.querySelector('[data-revert]').onclick=()=>revertCancellation(key);
+      root.append(record);
+    }
+  }
+  function revertCancellation(key){
+    if(!cancelled[key]||byDate.get(key)?.s!=='off')return;
+    // 撤銷直接執行，不依賴可能被手機瀏覽器阻擋的 confirm 對話框。
+    delete cancelled[key];
+    // 休假日不應繼續顯示銷假上班時設定的工作航廈。
+    delete terminals[key];
+    selected=key;
+    persist();
+    render();
+    const status=$('cancelStatus');
+    if(status){status.textContent=`${key} 已撤銷銷假，恢復原排休假。資料已儲存。`;status.hidden=false;}
+
+  }
+  $('cancelSave').onclick=()=>{const status=$('cancelStatus');if(status)status.hidden=true;const item=byDate.get(selected);if(!item||item.s!=='off')return;cancelled[selected]={shift:$('cancelShift').value};const terminal=$('cancelTerminal').value;if(terminal)terminals[selected]=terminal;else delete terminals[selected];persist();render()};
+  $('cancelRemove').onclick=()=>revertCancellation(selected);
+  $('terminalSelect').onchange=e=>{const item=byDate.get(selected);if(!item||actualShift(item)==='off'){e.target.value='';return;}const value=e.target.value;if(value)terminals[selected]=value;else delete terminals[selected];persist();render();};
   const localNow=()=>{const d=new Date();return {date:`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,time:`${pad(d.getHours())}:${pad(d.getMinutes())}`}};
   const uniqueId=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -123,20 +360,46 @@ header{display:flex;gap:18px;align-items:flex-start;justify-content:space-betwee
   function renderRecords(){
     const l=leaves.filter(x=>x.date===selected).sort((a,b)=>a.start.localeCompare(b.start));
     $('leaveRecords').replaceChildren();if(!l.length)$('leaveRecords').innerHTML='<div class="empty">所選日期沒有請假紀錄</div>';
-    l.forEach(x=>{const box=document.createElement('div');box.className='record';box.innerHTML=`<div><strong>${esc(x.type)}</strong><small>${esc(x.date)} · ${esc(x.start)}–${esc(x.end)}</small><p>${esc(x.memo)}</p></div><div class="record-actions"><button type="button" data-edit="1">編輯</button><button type="button" data-delete="1">刪除</button></div>`;box.querySelector('[data-edit]').onclick=()=>{$('leaveDate').value=x.date;$('leaveType').value=x.type;$('leaveStart').value=x.start;$('leaveEnd').value=x.end;$('leaveMemo').value=x.memo||'';editLeave=x.id;$('leaveSubmit').textContent='更新假單紀錄';$('leavePanel').scrollIntoView({behavior:'smooth'})};box.querySelector('[data-delete]').onclick=()=>{if(confirm('確定刪除這筆請假紀錄嗎？')){leaves=leaves.filter(y=>y.id!==x.id);persist();resetLeave();render();}};$('leaveRecords').append(box)});
-    const ordered=[...notes].sort((a,b)=>(b.date+' '+b.time).localeCompare(a.date+' '+a.time));
+    l.forEach(x=>{const box=document.createElement('div');box.className='record';box.innerHTML=`<div><strong>${esc(x.type)}</strong><small>${esc(x.date)} · ${esc(x.start)}–${esc(x.end)}</small><p>${esc(x.memo)}</p></div><div class="record-actions"><button type="button" data-edit="1">編輯</button><button type="button" data-delete="1">刪除</button></div>`;box.querySelector('[data-edit]').onclick=()=>{showDetails(x.date);$('leaveDate').value=x.date;$('leaveType').value=x.type;$('leaveStart').value=x.start;$('leaveEnd').value=x.end;$('leaveMemo').value=x.memo||'';editLeave=x.id;$('leaveSubmit').textContent='更新假單紀錄';$('leavePanel').scrollIntoView({behavior:'smooth'})};box.querySelector('[data-delete]').onclick=()=>{if(confirm('確定刪除這筆請假紀錄嗎？')){leaves=leaves.filter(y=>y.id!==x.id);persist();resetLeave();render();}};$('leaveRecords').append(box)});
+    const category=$('noteFilter').value,query=$('noteSearch').value.trim().toLowerCase();const ordered=[...notes].filter(x=>(category==='all'||(x.category||'未分類')===category)&&(!query||[x.text,x.date,x.category||'未分類'].join(' ').toLowerCase().includes(query))).sort((a,b)=>(b.date+' '+b.time).localeCompare(a.date+' '+a.time));
     $('noteRecords').replaceChildren();if(!ordered.length)$('noteRecords').innerHTML='<div class="empty">還沒有速記內容</div>';
-    ordered.forEach(x=>{const box=document.createElement('div');box.className='record';box.innerHTML=`<div><small>${esc(x.date)} · ${esc(x.time)}</small><p>${esc(x.text)}</p></div><div class="record-actions"><button type="button" data-edit="1">編輯</button><button type="button" data-delete="1">刪除</button></div>`;box.querySelector('[data-edit]').onclick=()=>{$('noteDate').value=x.date;$('noteTime').value=x.time;$('noteText').value=x.text;editNote=x.id;$('noteSubmit').textContent='更新手札';$('notePanel').scrollIntoView({behavior:'smooth'})};box.querySelector('[data-delete]').onclick=()=>{if(confirm('確定刪除這則手札嗎？')){notes=notes.filter(y=>y.id!==x.id);persist();resetNote();render();}};$('noteRecords').append(box)});
+    ordered.forEach(x=>{const box=document.createElement('div');box.className='record';box.innerHTML=`<div><small>${esc(x.date)} · ${esc(x.time)}</small><span class="category-tag">${esc(x.category||'未分類')}</span><p>${esc(x.text)}</p></div><div class="record-actions"><button type="button" data-edit="1">編輯</button><button type="button" data-delete="1">刪除</button></div>`;box.querySelector('[data-edit]').onclick=()=>{$('noteDate').value=x.date;$('noteTime').value=x.time;$('noteText').value=x.text;$('noteCategory').value=['未分類','趣事','安檢','心得'].includes(x.category)?x.category:'未分類';editNote=x.id;$('noteSubmit').textContent='更新手札';$('notePanel').scrollIntoView({behavior:'smooth'})};box.querySelector('[data-delete]').onclick=()=>{if(confirm('確定刪除這則手札嗎？')){notes=notes.filter(y=>y.id!==x.id);persist();resetNote();render();}};$('noteRecords').append(box)});
   }
   function resetLeave(){editLeave=null;$('leaveForm').reset();$('leaveDate').value=selected;const [a,b]=shiftDefaults(selected);$('leaveStart').value=a;$('leaveEnd').value=b;$('leaveSubmit').textContent='儲存假單紀錄'}
   function resetNote(){editNote=null;$('noteForm').reset();$('noteDate').value=selected;$('noteTime').value=localNow().time;$('noteSubmit').textContent='儲存手札'}
   $('leaveForm').onsubmit=e=>{e.preventDefault();const date=$('leaveDate').value,startTime=$('leaveStart').value,endTime=$('leaveEnd').value;if(endTime<=startTime){alert('結束時間必須晚於開始時間');return}const entry={id:editLeave||uniqueId(),date,type:$('leaveType').value,start:startTime,end:endTime,memo:$('leaveMemo').value.trim()};if(editLeave)leaves=leaves.map(x=>x.id===editLeave?entry:x);else leaves.push(entry);persist();resetLeave();render()};
-  $('noteForm').onsubmit=e=>{e.preventDefault();const entry={id:editNote||uniqueId(),date:$('noteDate').value,time:$('noteTime').value,text:$('noteText').value.trim()};if(!entry.text)return;if(editNote)notes=notes.map(x=>x.id===editNote?entry:x);else notes.push(entry);persist();resetNote();render()};
-  $('leaveReset').onclick=resetLeave;$('noteReset').onclick=resetNote;
-  $('backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify({version:3,exportedAt:new Date().toISOString(),leaves,notes,terminals},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班日曆_請假手札航廈備份.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
-  $('restoreFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text());if(!Array.isArray(payload.leaves)||!Array.isArray(payload.notes))throw Error('格式不符合');if(!confirm('匯入將取代此裝置目前的請假、手札與航廈標籤資料，確定繼續？'))return;terminals={};if(payload.terminals&&typeof payload.terminals==='object'&&!Array.isArray(payload.terminals)){for(const [day,val] of Object.entries(payload.terminals)){if(byDate.has(day)&&['一航','二航'].includes(val))terminals[day]=val}}leaves=payload.leaves.filter(x=>x&&typeof x.date==='string'&&typeof x.type==='string');notes=payload.notes.filter(x=>x&&typeof x.date==='string'&&typeof x.text==='string');persist();resetLeave();resetNote();render();alert('已成功匯入備份')}catch{alert('檔案格式錯誤，請選擇本網站匯出的 JSON 備份')}finally{e.target.value=''}};
-  resetLeave();resetNote();
+  $('noteForm').onsubmit=e=>{e.preventDefault();const entry={id:editNote||uniqueId(),date:$('noteDate').value,time:$('noteTime').value,category:$('noteCategory').value,text:$('noteText').value.trim()};if(!entry.text)return;if(editNote)notes=notes.map(x=>x.id===editNote?entry:x);else notes.push(entry);persist();resetNote();render()};
+  $('leaveReset').onclick=resetLeave;$('noteReset').onclick=resetNote;$('noteFilter').addEventListener('change',renderRecords);$('noteSearch').addEventListener('input',renderRecords);
+  $('backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify({version:5,exportedAt:new Date().toISOString(),leaves,notes,terminals,cancelled,quotas},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班日曆_含銷假備份.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
+  $('restoreFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text());if(!Array.isArray(payload.leaves)||!Array.isArray(payload.notes))throw Error('格式不符合');if(!confirm('匯入將取代此裝置目前的請假、手札、航廈、銷假及月額度資料，確定繼續？'))return;cancelled={};quotas={};if(payload.cancelled&&typeof payload.cancelled==='object'&&!Array.isArray(payload.cancelled)){for(const [day,val] of Object.entries(payload.cancelled)){if(byDate.get(day)?.s==='off'&&['early','late'].includes(val?.shift))cancelled[day]={shift:val.shift}}}if(payload.quotas&&typeof payload.quotas==='object'&&!Array.isArray(payload.quotas)){for(const [key,val] of Object.entries(payload.quotas)){if(/^\d{4}-\d{2}$/.test(key)&&Number.isInteger(val)&&val>=0&&val<=31)quotas[key]=val}}terminals={};if(payload.terminals&&typeof payload.terminals==='object'&&!Array.isArray(payload.terminals)){for(const [day,val] of Object.entries(payload.terminals)){if(byDate.has(day)&&actualShift(byDate.get(day))!=='off'&&['一航','二航'].includes(val))terminals[day]=val}}leaves=payload.leaves.filter(x=>x&&typeof x.date==='string'&&typeof x.type==='string');notes=payload.notes.filter(x=>x&&typeof x.date==='string'&&typeof x.text==='string');persist();resetLeave();resetNote();render();alert('已成功匯入備份')}catch{alert('檔案格式錯誤，請選擇本網站匯出的 JSON 備份')}finally{e.target.value=''}};
+  cleanOffTerminals();resetLeave();resetNote();
 
   const currentItem=byDate.get(currentIso);if(currentItem){month=months.findIndex(([y,m])=>y===currentItem.d.getUTCFullYear()&&m===currentItem.d.getUTCMonth());}render();
 })();
-</script></body></html>
+</script>
+<script>
+(()=>{
+  const nav=document.querySelector('.app-tabs');
+  if(!nav)return;
+  const go=(name)=>{
+    document.querySelectorAll('.tab-view').forEach(view=>view.hidden=view.dataset.view!==name);
+    nav.querySelectorAll('[data-tab]').forEach(btn=>{const active=btn.dataset.tab===name;btn.classList.toggle('active',active);if(active)btn.setAttribute('aria-current','page');else btn.removeAttribute('aria-current');});
+    const selected=document.getElementById('selectedDate')?.textContent||'—';
+    document.querySelectorAll('.active-day-label').forEach(el=>el.textContent=selected);
+    window.scrollTo({top:0,behavior:'instant'});
+  };
+  nav.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.tab)));
+  document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+  document.getElementById('calendars').addEventListener('click',event=>{
+    if(event.target.closest('.day[data-date]')){
+      document.querySelectorAll('.active-day-label').forEach(el=>el.textContent=document.getElementById('selectedDate').textContent);
+    }
+  });
+  // Make journal the quickest new-entry path, with fresh time prefilled.
+  const noteButton=nav.querySelector('[data-tab="note"]');
+  noteButton?.addEventListener('click',()=>{
+    if(!document.getElementById('noteText').value){const d=new Date();document.getElementById('noteTime').value=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+  });
+})();
+</script>
+</body></html>
