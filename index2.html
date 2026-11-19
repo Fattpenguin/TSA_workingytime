@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#f6f7fb" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0e1423" media="(prefers-color-scheme: dark)">
-<title>我的輪班日曆｜工作與手札</title>
+<title>我的勤務列表｜雲端勤務管理</title>
 <style>
 :root{color-scheme:light;--ink:#1e293b;--sub:#64748b;--line:#e6eaf0;--bg:#f6f7fb;--white:#fff;--late:#7551d6;--late-bg:#eee8fd;--early:#177c81;--early-bg:#def5f1;--off:#db6a40;--off-bg:#fff0e8}
 *{box-sizing:border-box}body{font-family:ui-sans-serif,system-ui,-apple-system,"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;margin:0;background:var(--bg);color:var(--ink)}button{font:inherit;cursor:pointer} .wrap{max-width:1060px;margin:auto;padding:30px 20px 54px}
@@ -199,10 +199,30 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 .cloud-panel p{font-size:13px;line-height:1.65;margin:10px 0;color:var(--sub)}
 .cloud-choices{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px}
 .cloud-help{display:block;color:var(--sub);font-size:12px;line-height:1.6;margin-top:12px}
+
+.return-alert{margin:0 0 16px;background:#fff4db;color:#6c4812;border:1px solid #efd39d;border-radius:16px;padding:14px 16px;line-height:1.65}
+.return-alert strong{display:block;font-size:16px}.return-alert small{display:block;font-size:12px}
+.return-settings{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:12px}.return-settings label{display:grid;gap:5px;font-size:13px;font-weight:700}.return-settings select{padding:10px;border-radius:10px;background:var(--white);color:var(--ink);border:1px solid var(--line)}
+@media(prefers-color-scheme:dark){.return-alert{background:#3b2c19;color:#ffe4ad;border-color:#70532c}}
+/* 7.5: responsive layout, safe areas, and one consistent content width */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+.wrap{width:100%;max-width:1060px;min-width:0;margin-inline:auto;padding-inline:clamp(12px,3vw,24px)}
+.tab-view,.panel,.calendar,.daily-cards,.daily-card,.details,.record,.stats-grid,.work-slot{min-width:0;max-width:100%}
+.daily-card{overflow-wrap:anywhere}
+.daily-cards{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+input,select,textarea{max-width:100%;min-width:0}
+@media (max-width:760px){.daily-cards{grid-template-columns:minmax(0,1fr);gap:12px}.daily-card{padding:16px}.daily-shift{font-size:20px}.daily-heading strong{font-size:12px}.daily-meta{font-size:13px}}
+@media (max-width:430px){.day .shift small{display:none}.day .shift{padding:5px 2px}.day .terminal-chip{padding:4px 2px}}
+@media (max-width:360px){.wrap{padding-inline:8px}.daily-card{padding:12px}.app-tabs .app-tab{font-size:10px}.field input,.field select{max-width:100%}}
+.cloud-top{display:flex;align-items:center;gap:9px;justify-content:space-between;flex-wrap:wrap;margin-top:6px}
+.header-cloud{font-size:12px;font-weight:750;color:var(--sub);padding:6px 10px;border-radius:20px;border:1px solid var(--line);background:var(--white)}
+.unsaved-work{color:#a65c0e;font-weight:800}.mini-cell.leave{background:#fff0e8;color:#ba5530}
+.note-export{display:flex;gap:9px;flex-wrap:wrap;margin-top:10px}
+@media(prefers-color-scheme:dark){.unsaved-work{color:#ffca77}.mini-cell.leave{background:#4b2e21;color:#ffc1a5}}
 </style>
 </head>
 <body><main class="wrap">
-<header><div><div class="eyebrow">MY SHIFT CALENDAR · 2026–2027</div><h1 id="personalCalendarTitle">我的勤務列表</h1><p class="description">早班 06:00–14:00 ｜ 晚班 10:00–18:00</p></div></header>
+<header><div><div class="eyebrow">MY SHIFT CALENDAR · 2026–2027</div><h1 id="personalCalendarTitle">我的勤務列表</h1><p class="description">早班 06:00–14:00 ｜ 晚班 10:00–18:00</p></div><span id="headerCloudStatus" class="header-cloud" aria-live="polite">雲端狀態：讀取中</span></header>
 <nav class="app-tabs" aria-label="主要功能">
 <button class="app-tab active" type="button" data-tab="calendar" aria-current="page"><span class="tab-icon">▦</span><span>月曆</span></button>
 <button class="app-tab" type="button" data-tab="work"><span class="tab-icon">◷</span><span>勤務</span></button>
@@ -212,6 +232,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 </nav>
 <div class="tab-view" data-view="calendar">
 <div class="section-intro"><div><span class="section-kicker">SHIFT CALENDAR</span><h2>我的班表</h2></div><span class="muted">點日期查看班別與航廈</span></div>
+<div id="returnReminder" class="return-alert" hidden aria-live="polite"></div>
 <div class="daily-cards" aria-label="今日與明日班表">
   <article class="daily-card"><div class="daily-heading"><span>今天</span><strong id="todayDate">—</strong></div><div class="daily-shift" id="todayShift">讀取中…</div><div class="daily-meta" id="todayTerminal"></div><div class="home-duty" id="todayWork"></div><button class="home-edit" type="button" data-work-day="today">查看／編輯勤務</button></article>
   <article class="daily-card"><div class="daily-heading"><span>明天</span><strong id="tomorrowDate">—</strong></div><div class="daily-shift" id="tomorrowShift">讀取中…</div><div class="daily-meta" id="tomorrowTerminal"></div><div class="home-duty" id="tomorrowWork"></div><button class="home-edit" type="button" data-work-day="tomorrow">查看／編輯勤務</button></article>
@@ -304,7 +325,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
       <label class="field">分類<select id="noteCategory"><option>未分類</option><option>趣事</option><option>安檢</option><option>心得</option></select></label>
       <label class="field wide">內容<textarea id="noteText" required placeholder="今天有什麼重要的事情要記下？"></textarea></label>
     </div><div class="controls"><button class="btn primary" type="submit" id="noteSubmit">儲存手札</button><button type="button" class="btn" id="noteReset">新增一則</button></div></form>
-    <div class="note-filter"><select id="noteFilter" aria-label="依手札分類篩選"><option value="all">全部分類</option><option>未分類</option><option>趣事</option><option>安檢</option><option>心得</option></select><input id="noteSearch" type="search" placeholder="搜尋手札內容" aria-label="搜尋手札內容"></div><div id="noteRecords" class="records" aria-live="polite"></div>
+    <div class="note-filter"><select id="noteFilter" aria-label="依手札分類篩選"><option value="all">全部分類</option><option>未分類</option><option>趣事</option><option>安檢</option><option>心得</option></select><input id="noteSearch" type="search" placeholder="搜尋手札內容" aria-label="搜尋手札內容"></div><div class="note-export"><button class="btn" type="button" id="noteExport">匯出目前篩選手札 .txt</button></div><div id="noteRecords" class="records" aria-live="polite"></div>
 </section>
 </div>
 <div class="tab-view" data-view="more" hidden>
@@ -312,6 +333,9 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 <section class="summary" aria-label="班表統計"><div class="metric"><div class="t">排班天數</div><div class="n" id="total">—</div><div class="detail">含起訖日</div></div><div class="metric"><div class="t">晚班</div><div class="n" id="lateCount">—</div><div class="detail">10:00–18:00</div></div><div class="metric"><div class="t">早班</div><div class="n" id="earlyCount">—</div><div class="detail">06:00–14:00</div></div><div class="metric"><div class="t">原排休假</div><div class="n" id="offCount">—</div><div class="detail">尚未扣除銷假</div></div></section>
 
 <div class="panel" style="margin:0 0 18px"><strong>工作統計</strong><p>統計實際班別（含銷假上班）與一航、二航的分布；未設定航廈另計。</p><label class="field">統計月份<select id="statsMonth" class="stats-picker"><option value="all">完整排班期間</option><option value="2026-11">2026 年 11 月</option><option value="2026-12">2026 年 12 月</option><option value="2027-01">2027 年 1 月</option><option value="2027-02">2027 年 2 月</option><option value="2027-03">2027 年 3 月</option></select></label><div id="statsResults" class="stats-grid"></div><div id="workStats" class="stats-grid work-stats"></div><p class="work-stats-note">勤務內容分為一線、管制門、二線、備勤；未設定不計入上述時數。舊版的「執勤／休息」紀錄會保留並獨立列出，請依實際勤務重新分類。</p></div>
+<div class="panel" style="margin:0 0 18px"><strong>收假提醒</strong><p>休假最後一天須在 22:00 前收假。可下載行事曆提醒檔，讓手機提前通知（需匯入行事曆並開啟通知）。</p>
+<div class="return-settings"><label>提醒時間<select id="returnHour"><option value="18">18:00</option><option value="19">19:00</option><option value="20" selected>20:00</option><option value="21">21:00</option></select></label><button class="btn primary" id="returnIcsBtn" type="button">下載收假提醒 .ics</button></div>
+<small class="cloud-help" id="returnStatus">以實際班表為準；若之後銷假或調班，請重新下載並更新行事曆提醒。僅在網站開啟時顯示首頁提醒，網站關閉後不會自行推播。</small></div>
 <div class="panel" style="margin:0 0 18px"><strong>行事曆匯出</strong><p>將班表下載為 .ics，匯入 Google、Apple 或 Outlook 行事曆。</p><button class="btn primary" id="icsBtn" type="button">匯出到行事曆 .ics</button></div>
 <section class="panel cloud-panel" aria-label="雲端同步" style="margin:0 0 18px">
   <div class="cloud-heading"><strong>Firebase 雲端同步</strong><span id="cloudBadge" class="cloud-badge">尚未設定</span></div>
@@ -320,9 +344,9 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   <div id="cloudChoices" class="cloud-choices" hidden><p id="cloudChoiceMessage">首次同步前，請選擇資料來源。這個操作會取代另一端的紀錄。</p>
     <div class="cloud-actions"><button type="button" class="btn primary" id="cloudUpload">上傳此裝置的紀錄</button><button type="button" class="btn" id="cloudDownload">使用雲端紀錄</button></div>
   </div>
-  <small class="cloud-help">成功同步後，新增或修改的紀錄會自動傳到雲端。離線時仍儲存在本機，重新連線後會嘗試補傳。第一次連線前請先下載 JSON 備份。</small>
+  <small class="cloud-help">成功同步後，資料會依類別分開保存至 Firebase；離線時先留在本機，連線恢復後嘗試補傳。首次新版登入會保留舊版雲端資料供遷移；重要變更請等「已同步」再關閉。</small>
 </section>
-<div class="panel" style="margin:0 0 18px"><strong>資料備份</strong><div class="backup"><button class="btn" id="backupBtn" type="button">下載備份 JSON</button><label class="btn" style="cursor:pointer">匯入備份 JSON<input hidden type="file" id="restoreFile" accept="application/json,.json"></label><small>在登入並完成首次同步前，資料僅保留於本機。建議定期下載 JSON 備份；雲端與本機資料以最後成功寫入為準。</small></div></div>
+<div class="panel" style="margin:0 0 18px"><strong>資料備份</strong><div class="backup"><button class="btn" id="backupBtn" type="button">下載備份 JSON</button><label class="btn" style="cursor:pointer">匯入備份 JSON<input hidden type="file" id="restoreFile" accept="application/json,.json"></label><small>建議定期下載 JSON 備份。新版會對不同類別分開同步；如兩裝置修改相同類別且版本衝突，會停止自動覆蓋並要求你選擇。</small></div></div>
 <div class="footer"><strong>排班規則：</strong>2026/11/17、18、19 為晚班；11/20、21 休假；11/22 起固定循環「晚班 2 天 → 早班 2 天 → 休假 2 天」。排班截至 2027/03/22（含當日）。<span class="hint">「單月／全部月份」可在月曆頁面切換；行事曆匯出在「更多」。</span></div>
 </div>
 </main><script>
@@ -349,10 +373,18 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   const WORK_TYPES=['一線','管制門','二線','備勤'];
   const LEGACY_WORK_TYPES=['執勤','休息']; // 保留舊資料，不擅自轉換成一線或二線
   const ALL_WORK_TYPES=[...WORK_TYPES,...LEGACY_WORK_TYPES];
-  function fullLeave(key){
-    const item=byDate.get(key);if(!item||actualShift(item)==='off')return false;
-    const [start,end]=baseWorkTimes(actualShift(item));
-    return leaves.some(l=>l.date===key && l.start<=start && l.end>=end);
+  // Compute union of leave intervals clipped to the ACTUAL shifted 8-hour work window.
+  function leaveSegments(key){
+    const time=timesFor(key);if(!time)return [];
+    const intervals=leaves.filter(l=>l.date===key).map(l=>[Math.max(clockMinutes(l.start),time.start),Math.min(clockMinutes(l.end),time.end)]).filter(([a,b])=>Number.isFinite(a)&&Number.isFinite(b)&&b>a).sort((a,b)=>a[0]-b[0]);
+    const merged=[];for(const [a,b] of intervals){const last=merged[merged.length-1];if(last&&a<=last[1])last[1]=Math.max(last[1],b);else merged.push([a,b]);}return merged;
+  }
+  function leaveMinutes(key){return leaveSegments(key).reduce((v,[a,b])=>v+b-a,0)}
+  function fullLeave(key){return leaveMinutes(key)>=480}
+  function leaveHoursLabel(key){const h=leaveMinutes(key)/60;return Number.isInteger(h)?String(h):h.toFixed(1)}
+  function canUseLeaveInShift(key, shiftCode, offset=0){
+    const [base]=baseWorkTimes(shiftCode),a=clockMinutes(base)+offset*60,b=a+480;
+    return leaves.filter(l=>l.date===key).every(l=>clockMinutes(l.start)>=a&&clockMinutes(l.end)<=b);
   }
   function baseWorkTimes(type){return type==='early'?['06:00','14:00']:['10:00','18:00'];}
   function clockMinutes(time){const [h,m]=time.split(':').map(Number);return h*60+m;}
@@ -360,9 +392,37 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   function workEntry(key){const raw=work[key]||{};const offset=Number.isInteger(raw.offset)&&raw.offset>=-2&&raw.offset<=2?raw.offset:0;const slots=Array.isArray(raw.slots)&&raw.slots.length===8?raw.slots.map(t=>ALL_WORK_TYPES.includes(t)?t:''):Array(8).fill('');return {offset,slots};}
   function timesFor(key){const item=byDate.get(key);if(!item||actualShift(item)==='off')return null;const [a]=baseWorkTimes(actualShift(item));const start=clockMinutes(a)+workEntry(key).offset*60;return {start,end:start+480,label:`${clockString(start)}–${clockString(start+480)}`};}
   function cleanWork(){for(const key of Object.keys(work)){const item=byDate.get(key);if(!item||actualShift(item)==='off'){delete work[key];continue;}const entry=workEntry(key);if(entry.offset===0&&entry.slots.every(x=>!x))delete work[key];else work[key]=entry;}}
-  function workSummary(key){const entry=workEntry(key),count={'一線':0,'管制門':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};for(const type of entry.slots)count[type||'未設定']++;return count;}
+  function workSummary(key){
+    const entry=workEntry(key),count={'一線':0,'管制門':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};
+    const t=timesFor(key),segs=leaveSegments(key);
+    if(!t)return count;
+    entry.slots.forEach((type,i)=>{
+      const a=t.start+i*60,b=a+60;
+      const absent=segs.reduce((v,[x,y])=>v+Math.max(0,Math.min(b,y)-Math.max(a,x)),0);
+      count[type||'未設定']+=(60-absent)/60;
+    });
+    return count;
+  }
 
-  function showDetails(key){selected=key;const item=byDate.get(key);if(!item)return;const effective=actualShift(item),isCancelled=item.s==='off'&&!!cancelled[key];document.getElementById('selectedDate').textContent=fmt(item.d);document.getElementById('selectedDesc').textContent=isCancelled?`原排休假 → 銷假上班 ${timesFor(key)?.label||shiftTimes[effective]}（8 小時）`:effective==='off'?'今天不用上班，好好休息！':`工作時間 ${timesFor(key)?.label||shiftTimes[effective]}（8 小時）`;const tag=document.getElementById('selectedTag');tag.className='tag '+(isCancelled?'cancelled':effective);tag.textContent=isCancelled?`銷假・${shiftNames[effective]}`:shiftOverrides[key]?`調班・${shiftNames[effective]}`:shiftNames[effective];const terminalPicker=document.getElementById('terminalSelect');terminalPicker.disabled=effective==='off';terminalPicker.value=effective==='off'?'':terminals[key]||'';terminalPicker.title=effective==='off'?'休假日不可設定航廈；請先至假勤登記銷假上班。':'設定工作航廈';document.getElementById('dutyDate').value=key;document.getElementById('dutyShiftSummary').textContent=`${fmt(item.d)}｜原排${shiftNames[item.s]}${isCancelled?'，已銷假':''}`;document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));document.querySelectorAll(`[data-date="${key}"]`).forEach(el=>el.classList.add('selected'));$('cancelShift').value=cancelled[key]?.shift||'early';$('cancelTerminal').value=terminals[key]||'';$('cancelInfo').textContent=item.s==='off'?(isCancelled?'這一天已銷假上班，可修改班別或撤銷。':'這一天原排休假，可選擇銷假上班。'):'這一天原排上班，無須銷假。';$('cancelShift').disabled=item.s!=='off';$('cancelTerminal').disabled=item.s!=='off';$('cancelSave').disabled=item.s!=='off';$('cancelSave').textContent=isCancelled?'更新銷假上班':'登記銷假上班';$('cancelRemove').hidden=!isCancelled;if(typeof syncSelection==='function')syncSelection(key);if(typeof renderWork==='function')renderWork();}
+  // 收假判定：前一日實際休假、當日實際上班（包含銷假與單日調班）。
+  function isReturnDay(item){
+    if(!item||actualShift(item)==='off')return false;
+    const previous=byDate.get(iso(new Date(item.t-DAY)));
+    return !!previous&&actualShift(previous)==='off';
+  }
+  function updateReturnReminder(){
+    const box=document.getElementById('returnReminder');
+    const today=byDate.get(`${new Date().getFullYear()}-${pad(new Date().getMonth()+1)}-${pad(new Date().getDate())}`);
+    const next=today&&byDate.get(iso(new Date(today.t+DAY)));
+    if(!next||!isReturnDay(next)){box.hidden=true;return;}
+    box.hidden=false;
+    const label=timesFor(next.iso)?.label||shiftTimes[actualShift(next)];
+    box.replaceChildren();
+    const title=document.createElement('strong');title.textContent='🌙 今晚 22:00 前收假';
+    const detail=document.createElement('small');detail.textContent='明日 '+shiftNames[actualShift(next)]+' '+label+'｜'+(terminals[next.iso]||'航廈未設定');
+    box.append(title,detail);
+  }
+  function showDetails(key){selected=key;const item=byDate.get(key);if(!item)return;const effective=actualShift(item),isCancelled=item.s==='off'&&!!cancelled[key];document.getElementById('selectedDate').textContent=fmt(item.d);document.getElementById('selectedDesc').textContent=isCancelled?`原排休假 → 銷假上班 ${timesFor(key)?.label||shiftTimes[effective]}（8 小時）`:effective==='off'?'這一天休假':`工作時間 ${timesFor(key)?.label||shiftTimes[effective]}（8 小時）${leaveMinutes(key)>0?'｜請假 '+leaveHoursLabel(key)+' 小時':''}`;const tag=document.getElementById('selectedTag');tag.className='tag '+(isCancelled?'cancelled':effective);tag.textContent=isCancelled?`銷假・${shiftNames[effective]}`:shiftOverrides[key]?`調班・${shiftNames[effective]}`:shiftNames[effective];const terminalPicker=document.getElementById('terminalSelect');terminalPicker.disabled=effective==='off';terminalPicker.value=effective==='off'?'':terminals[key]||'';terminalPicker.title=effective==='off'?'休假日不可設定航廈；請先至假勤登記銷假上班。':'設定工作航廈';document.getElementById('dutyDate').value=key;document.getElementById('dutyShiftSummary').textContent=`${fmt(item.d)}｜原排${shiftNames[item.s]}${isCancelled?'，已銷假':''}${effective!=='off'&&leaveMinutes(key)?'｜已請假 '+leaveHoursLabel(key)+' 小時':''}`;document.getElementById('leaveSubmit').disabled=effective==='off';document.getElementById('leaveSubmit').title=effective==='off'?'休假日不能新增請假':'';document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));document.querySelectorAll(`[data-date="${key}"]`).forEach(el=>el.classList.add('selected'));$('cancelShift').value=cancelled[key]?.shift||'early';$('cancelTerminal').value=terminals[key]||'';$('cancelInfo').textContent=item.s==='off'?(isCancelled?'這一天已銷假上班，可修改班別或撤銷。':'這一天原排休假，可選擇銷假上班。'):'這一天原排上班，無須銷假。';$('cancelShift').disabled=item.s!=='off';$('cancelTerminal').disabled=item.s!=='off';$('cancelSave').disabled=item.s!=='off';$('cancelSave').textContent=isCancelled?'更新銷假上班':'登記銷假上班';$('cancelRemove').hidden=!isCancelled;if(typeof syncSelection==='function')syncSelection(key);if(typeof workDate!=='undefined'&&key!==workDate&&!(typeof workDirty==='function'&&workDirty())){workDate=key;workDraft=workEntry(key)}if(typeof renderWork==='function')renderWork();}
   function makeMonth(y,m,index){
     const section=document.createElement('section');section.className='calendar';section.style.marginBottom='18px';section.id=`month-${index}`;
     const top=document.createElement('div');top.className='cal-top';
@@ -383,7 +443,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
     account.innerHTML=`<span>原排休假 <strong>${original}</strong> 天</span><span>銷假上班 <strong>${used}</strong> 天</span><span>實際休假 <strong>${remaining}</strong> 天</span><label class="quota-row">本月應休 <input type="number" min="0" max="31" step="1" aria-label="${y}年${m+1}月應休天數" placeholder="未設定" value="${Number.isInteger(quota)?quota:''}"> 天</label><span class="quota-status"></span><div class="account-hint">應休天數請依單位認定填寫；本表 11 月及 3 月僅涵蓋部分月份，不宜與整月應休額度直接比較。</div>`;
     const input=account.querySelector('input'),status=account.querySelector('.quota-status');const syncQuota=()=>{const v=quotas[key];status.textContent=Number.isInteger(v)?(remaining>v?`尚可銷假 ${remaining-v} 天`:remaining<v?`實休較應休少 ${v-remaining} 天`:'已符合應休天數'):'未設定應休標準';};syncQuota();input.onchange=()=>{const raw=input.value;if(raw==='' ){delete quotas[key]}else if(!/^\d+$/.test(raw)||Number(raw)>31){alert('請輸入 0–31 天');input.value=Number.isInteger(quotas[key])?quotas[key]:'';return}else{quotas[key]=Number(raw)}persist();syncQuota()};const fold=document.createElement('details');fold.className='month-accounting-wrap';const summary=document.createElement('summary');summary.textContent='查看每月休假統計與應休額度';fold.append(summary,account);section.append(fold);return section;
   }
-  function render(){calendarRoot.replaceChildren();const chosen=all?months.map((_,i)=>i):[month];chosen.forEach(i=>calendarRoot.append(makeMonth(...months[i],i)));document.getElementById('allBtn').textContent=all?'返回單月':'檢視全部月份';document.getElementById('allBtn').setAttribute('aria-pressed',String(all));document.getElementById('allBtn').classList.toggle('active',all);showDetails(selected);renderCancelRecords();renderStats();renderTomorrow();renderWork()}
+  function render(){calendarRoot.replaceChildren();const chosen=all?months.map((_,i)=>i):[month];chosen.forEach(i=>calendarRoot.append(makeMonth(...months[i],i)));document.getElementById('allBtn').textContent=all?'返回單月':'檢視全部月份';document.getElementById('allBtn').setAttribute('aria-pressed',String(all));document.getElementById('allBtn').classList.toggle('active',all);showDetails(selected);renderCancelRecords();renderStats();renderTomorrow();updateReturnReminder();renderWork()}
   function navigateToday(){const key=byDate.has(currentIso)?currentIso:data[0].iso;const d=byDate.get(key).d;month=months.findIndex(([y,m])=>y===d.getUTCFullYear()&&m===d.getUTCMonth());all=false;render();showDetails(key)}
   document.getElementById('allBtn').onclick=()=>{all=!all;render()};
   function icsDate(d,h=0){return `${d.getUTCFullYear()}${pad(d.getUTCMonth()+1)}${pad(d.getUTCDate())}T${pad(h)}0000`}
@@ -395,20 +455,53 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
     lines.push('END:VCALENDAR');const blob=new Blob([lines.join('\r\n')+'\r\n'],{type:'text/calendar;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班休假日曆_20261117-20270322.ics';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
   };
 
+  document.getElementById('returnHour').addEventListener('change',e=>{
+    returnHour=Number(e.target.value);persist();document.getElementById('returnStatus').textContent='提醒時間已儲存。若已匯入舊提醒，請重新匯出並更新行事曆。';
+  });
+  document.getElementById('returnIcsBtn').onclick=()=>{
+    const stamp=new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,'');
+    const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Personal Shift Return Reminder//ZH-TW','CALSCALE:GREGORIAN','X-WR-CALNAME:收假提醒'];
+    let count=0;
+    for(const item of data){
+      if(!isReturnDay(item))continue;
+      const eve=new Date(item.t-DAY),yyyymmdd=iso(eve).replace(/-/g,'');
+      const hour=String(returnHour).padStart(2,'0');
+      const shiftName=shiftNames[actualShift(item)];
+      const schedule=timesFor(item.iso)?.label||shiftTimes[actualShift(item)];
+      const location=terminals[item.iso]||'航廈未設定';
+      lines.push('BEGIN:VEVENT',`UID:return-${item.iso}@my-shift-calendar`,`DTSTAMP:${stamp}`,`DTSTART;TZID=Asia/Taipei:${yyyymmdd}T${hour}0000`,`DTEND;TZID=Asia/Taipei:${yyyymmdd}T${hour}0500`,`SUMMARY:${escapeIcs('今晚 22:00 前收假｜明日'+shiftName)}`,`DESCRIPTION:${escapeIcs('今晚 22:00 前收假；明日 '+item.iso+' '+schedule+'｜'+location)}`,'BEGIN:VALARM','ACTION:DISPLAY','TRIGGER:-PT0M',`DESCRIPTION:${escapeIcs('今晚 22:00 前收假｜明日'+shiftName+' '+schedule)}`,'END:VALARM','END:VEVENT');
+      count++;
+    }
+    lines.push('END:VCALENDAR');
+    const blob=new Blob([lines.join('\r\n')+'\r\n'],{type:'text/calendar;charset=utf-8'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='收假提醒_2026-2027.ics';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+    document.getElementById('returnStatus').textContent=`已產生 ${count} 筆收假提醒，時間為收假前一晚 ${hour}:00。請匯入手機行事曆並確認提醒已啟用；若班表更動需要重新產生。`;
+  };
   const STORAGE_KEY='personal-shift-calendar-v2';
-  function loadSaved(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return {leaves:Array.isArray(saved.leaves)?saved.leaves:[],notes:Array.isArray(saved.notes)?saved.notes:[],terminals:saved.terminals&&typeof saved.terminals==='object'&&!Array.isArray(saved.terminals)?saved.terminals:{},cancelled:saved.cancelled&&typeof saved.cancelled==='object'&&!Array.isArray(saved.cancelled)?saved.cancelled:{},quotas:saved.quotas&&typeof saved.quotas==='object'&&!Array.isArray(saved.quotas)?saved.quotas:{},work:saved.work&&typeof saved.work==='object'&&!Array.isArray(saved.work)?saved.work:{},shiftOverrides:saved.shiftOverrides&&typeof saved.shiftOverrides==='object'&&!Array.isArray(saved.shiftOverrides)?saved.shiftOverrides:{}};}catch{return {leaves:[],notes:[],terminals:{},cancelled:{},quotas:{},work:{},shiftOverrides:{}}}}
-  const initial=loadSaved();let leaves=initial.leaves,notes=initial.notes,terminals=initial.terminals,cancelled=initial.cancelled,quotas=initial.quotas,work=initial.work,shiftOverrides=initial.shiftOverrides,editLeave=null,editNote=null;
+  function loadSaved(){try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');return {leaves:Array.isArray(saved.leaves)?saved.leaves:[],notes:Array.isArray(saved.notes)?saved.notes:[],terminals:saved.terminals&&typeof saved.terminals==='object'&&!Array.isArray(saved.terminals)?saved.terminals:{},cancelled:saved.cancelled&&typeof saved.cancelled==='object'&&!Array.isArray(saved.cancelled)?saved.cancelled:{},quotas:saved.quotas&&typeof saved.quotas==='object'&&!Array.isArray(saved.quotas)?saved.quotas:{},work:saved.work&&typeof saved.work==='object'&&!Array.isArray(saved.work)?saved.work:{},shiftOverrides:saved.shiftOverrides&&typeof saved.shiftOverrides==='object'&&!Array.isArray(saved.shiftOverrides)?saved.shiftOverrides:{},returnHour:[18,19,20,21].includes(Number(saved.returnHour))?Number(saved.returnHour):20};}catch{return {leaves:[],notes:[],terminals:{},cancelled:{},quotas:{},work:{},shiftOverrides:{},returnHour:20}}}
+  const initial=loadSaved();let leaves=initial.leaves,notes=initial.notes,terminals=initial.terminals,cancelled=initial.cancelled,quotas=initial.quotas,work=initial.work,shiftOverrides=initial.shiftOverrides,returnHour=initial.returnHour,editLeave=null,editNote=null;
   function cleanOverrides(){for(const [key,val] of Object.entries(shiftOverrides)){const item=byDate.get(key);if(!item||item.s==='off'||!['early','late'].includes(val)||item.s===val)delete shiftOverrides[key];}}
   cleanOverrides();
   function cleanOffTerminals(){for(const key of Object.keys(terminals)){const item=byDate.get(key);if(!item||actualShift(item)==='off'||!['一航','二航'].includes(terminals[key]))delete terminals[key];}}
   let receivingCloud=false;
-  function snapshot(){return {leaves,notes,terminals,cancelled,quotas,work,shiftOverrides}}
-  function persist(){cleanOverrides();cleanOffTerminals();cleanWork();try{localStorage.setItem(STORAGE_KEY,JSON.stringify(snapshot()));if(!receivingCloud){localStorage.setItem('shift-cloud-unsynced','1');window.dispatchEvent(new Event('shift:local-change'));}}catch{alert('無法儲存，請確認瀏覽器沒有禁止本機儲存。')}}
+  function snapshot(){return {leaves,notes,terminals,cancelled,quotas,work,shiftOverrides,returnHour}}
+  let lastSnapshot=JSON.parse(JSON.stringify(snapshot()));
+  function persist(){
+    cleanOverrides();cleanOffTerminals();cleanWork();
+    const current=snapshot();
+    const changedKeys=Object.keys(current).filter(key=>JSON.stringify(lastSnapshot[key])!==JSON.stringify(current[key]));
+    try{
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(current));
+      lastSnapshot=JSON.parse(JSON.stringify(current));
+      if(!receivingCloud&&changedKeys.length){localStorage.setItem('shift-cloud-unsynced','1');window.dispatchEvent(new CustomEvent('shift:local-change',{detail:{keys:changedKeys}}));}
+    }catch{alert('無法儲存，請確認瀏覽器沒有禁止本機儲存。')}
+  }
   function replaceFromCloud(payload){
     if(!payload||!Array.isArray(payload.leaves)||!Array.isArray(payload.notes))throw new Error('雲端資料格式不符合');
     receivingCloud=true;
     try{
-      cancelled={};quotas={};work={};terminals={};shiftOverrides={};
+      cancelled={};quotas={};work={};terminals={};shiftOverrides={};returnHour=[18,19,20,21].includes(Number(payload.returnHour))?Number(payload.returnHour):20;
+      document.getElementById('returnHour').value=String(returnHour);
       if(payload.cancelled&&typeof payload.cancelled==='object')for(const [day,val] of Object.entries(payload.cancelled))if(byDate.get(day)?.s==='off'&&['early','late'].includes(val?.shift))cancelled[day]={shift:val.shift};
       if(payload.shiftOverrides&&typeof payload.shiftOverrides==='object'&&!Array.isArray(payload.shiftOverrides))for(const [day,val] of Object.entries(payload.shiftOverrides))if(byDate.has(day)&&byDate.get(day).s!=='off'&&['early','late'].includes(val)&&byDate.get(day).s!==val)shiftOverrides[day]=val;
       if(payload.quotas&&typeof payload.quotas==='object')for(const [key,val] of Object.entries(payload.quotas))if(/^\d{4}-\d{2}$/.test(key)&&Number.isInteger(val)&&val>=0&&val<=31)quotas[key]=val;
@@ -419,23 +512,30 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
       cleanWork();cleanOffTerminals();persist();resetLeave();resetNote();setWorkDate(workDate);render();
     }finally{receivingCloud=false;}
   }
-  window.ShiftCalendarCloud={snapshot,replaceFromCloud,hasData:()=>Boolean(leaves.length||notes.length||Object.keys(terminals).length||Object.keys(cancelled).length||Object.keys(quotas).length||Object.keys(work).length||Object.keys(shiftOverrides).length)};
+  window.ShiftCalendarCloud={snapshot,replaceFromCloud,hasData:()=>Boolean(leaves.length||notes.length||Object.keys(terminals).length||Object.keys(cancelled).length||Object.keys(quotas).length||Object.keys(work).length||Object.keys(shiftOverrides).length||returnHour!==20)};
   function renderStats(){
     const choice=$('statsMonth')?.value||'all';const items=data.filter(x=>choice==='all'||x.iso.startsWith(choice));
     const count={early:0,late:0,off:0,t1:0,t2:0,unknown:0,cancel:0};
-    const hours={'一線':0,'管制門':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};let adjusted=0,daysWithSchedule=0;
+    const hours={'一線':0,'管制門':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};let adjusted=0,daysWithSchedule=0,leaveHours=0;
     for(const x of items){const sh=actualShift(x);count[sh]++;if(x.s==='off'&&sh!=='off')count.cancel++;
       if(sh!=='off'){
         if(terminals[x.iso]==='一航')count.t1++;else if(terminals[x.iso]==='二航')count.t2++;else count.unknown++;
-        const entry=workEntry(x.iso);if(entry.offset!==0)adjusted++;
+        const entry=workEntry(x.iso),segments=leaveSegments(x.iso),begin=timesFor(x.iso).start;
+        leaveHours+=leaveMinutes(x.iso)/60;
+        if(entry.offset!==0)adjusted++;
         if(entry.slots.some(Boolean))daysWithSchedule++;
-        for(const t of entry.slots)hours[t||'未設定']++;
+        for(let i=0;i<8;i++){
+          const a=begin+i*60,b=a+60;
+          const leaveInSlot=segments.reduce((v,[p,q])=>v+Math.max(0,Math.min(b,q)-Math.max(a,p)),0);
+          hours[entry.slots[i]||'未設定']+=(60-leaveInSlot)/60;
+        }
       }
     }
-    const cards=[['早班',count.early],['晚班',count.late],['實際休假',count.off],['銷假上班',count.cancel],['一航勤務',count.t1],['二航勤務',count.t2],['航廈未設定',count.unknown],['排定勤務時數',(count.early+count.late)*8+' 小時']];
+    const formatHours=n=>Number.isInteger(n)?String(n):n.toFixed(1);
+    const cards=[['早班',count.early],['晚班',count.late],['實際休假',count.off],['銷假上班',count.cancel],['一航勤務',count.t1],['二航勤務',count.t2],['航廈未設定',count.unknown],['排定班表時數',(count.early+count.late)*8+' 小時'],['已請假時數',formatHours(leaveHours)+' 小時'],['扣假後可勤務時數',formatHours((count.early+count.late)*8-leaveHours)+' 小時']];
     $('statsResults').innerHTML=cards.map(([name,n])=>`<div class="stats-card"><small>${name}</small><strong>${n}</strong></div>`).join('');
     const hoursCards=[['一線時數',hours['一線']],['管制門時數',hours['管制門']],['二線時數',hours['二線']],['備勤時數',hours.備勤],['舊版執勤（待分類）時數',hours.執勤],['舊版休息（待分類）時數',hours.休息],['尚未設定時數',hours.未設定],['班別更改天數',items.filter(x=>!!shiftOverrides[x.iso]).length],['彈性調整天數',adjusted],['已有勤務分配天數',daysWithSchedule]];
-    $('workStats').innerHTML=hoursCards.map(([name,n])=>`<div class="stats-card"><small>${name}</small><strong>${n}${name.includes('時數')?' 小時':' 天'}</strong></div>`).join('');
+    $('workStats').innerHTML=hoursCards.map(([name,n])=>`<div class="stats-card"><small>${name}</small><strong>${formatHours(n)}${name.includes('時數')?' 小時':' 天'}</strong></div>`).join('');
   }
   function renderTomorrow(){
     const now=new Date();
@@ -446,18 +546,28 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
       summary.replaceChildren();
       if(!item){$(shiftId).textContent='排班範圍外';$(terminalId).textContent='';return;}
       const shiftCode=actualShift(item),cancel=item.s==='off'&&shiftCode!=='off';
-      $(shiftId).textContent=`${cancel?'銷假・':shiftOverrides[key]?'調班・':''}${shiftNames[shiftCode]}｜${timesFor(key)?.label||'全天休假'}`;
-      $(terminalId).textContent=shiftCode==='off'?'今日休假':terminals[key]||'航廈未設定';
-      if(shiftCode==='off'){summary.textContent='今天沒有勤務安排';return;}
+      $(shiftId).textContent=`${cancel?'銷假・':shiftOverrides[key]?'調班・':''}${fullLeave(key)?'整日請假・':''}${shiftNames[shiftCode]}｜${timesFor(key)?.label||'全天休假'}`;
+      $(terminalId).textContent=shiftCode==='off'?'休假':terminals[key]||'航廈未設定';
+      if(shiftCode==='off'){summary.textContent=isToday?'今天沒有勤務安排':'明天沒有勤務安排';return;}
+      const leaveHr=leaveMinutes(key);
+      if(leaveHr>0){const el=document.createElement('div');el.className='mini-key';el.textContent=fullLeave(key)?'當日整日請假':`請假 ${leaveHoursLabel(key)} 小時`;summary.append(el);}
+      if(fullLeave(key))return;
       const entry=workEntry(key),ct=workSummary(key),hasAny=entry.slots.some(Boolean);
-      if(!hasAny){summary.textContent='尚未設定勤務分配';return;}
+      if(!hasAny){const hint=document.createElement('div');hint.textContent='尚未設定勤務分配';summary.append(hint);return;}
       if(isToday){
         const strip=document.createElement('div');strip.className='mini-strip';
-        entry.slots.forEach((type,i)=>{const span=document.createElement('span');span.className='mini-cell '+workClass(type);span.textContent=type?(LEGACY_WORK_TYPES.includes(type)?'舊':type==='管制門'?'門':type[0]):'—';span.title=`${clockString(timesFor(key).start+i*60)}–${clockString(timesFor(key).start+(i+1)*60)} ${type||'未設定'}`;strip.append(span)});
+        entry.slots.forEach((type,i)=>{
+          const span=document.createElement('span'),a=timesFor(key).start+i*60,b=a+60;
+          const absent=leaveSegments(key).reduce((v,[p,q])=>v+Math.max(0,Math.min(b,q)-Math.max(a,p)),0);
+          span.className='mini-cell '+(absent?'leave':workClass(type));
+          span.textContent=absent?'假':type?(LEGACY_WORK_TYPES.includes(type)?'舊':type==='管制門'?'門':type[0]):'—';
+          span.title=`${clockString(a)}–${clockString(b)} ${absent?`請假 ${absent} 分鐘／`:''}${type||'未設定'}`;
+          strip.append(span);
+        });
         summary.append(strip);
       }
       const mini=document.createElement('div');mini.className='work-mini-summary';
-      for(const type of [...ALL_WORK_TYPES,'未設定'])if(ct[type]){const el=document.createElement('span');el.className='mini-key '+workClass(type==='未設定'?'':type);el.textContent=`${LEGACY_WORK_TYPES.includes(type)?'舊版'+type:type} ${ct[type]}h`;mini.append(el)}
+      for(const type of [...ALL_WORK_TYPES,'未設定'])if(ct[type]){const el=document.createElement('span');el.className='mini-key '+workClass(type==='未設定'?'':type);el.textContent=`${LEGACY_WORK_TYPES.includes(type)?'舊版'+type:type} ${Math.round(ct[type]*10)/10}h`;mini.append(el)}
       summary.append(mini);
     };
     describe(now,'todayShift','todayDate','todayTerminal','todayWork',true);
@@ -466,8 +576,13 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   const $=id=>document.getElementById(id);
   let workDate=byDate.has(currentIso)?currentIso:data[0].iso;
   let workDraft={offset:0,slots:Array(8).fill('')},selectedWorkType='一線';
+  const workDirty=()=>JSON.stringify(workDraft)!==JSON.stringify(workEntry(workDate));
+  const confirmWorkExit=()=>!workDirty()||confirm('這一天的勤務分配尚未儲存。要放棄修改嗎？');
+  window.ShiftWorkGuard=confirmWorkExit;
+  window.ShiftHasUnsavedWork=workDirty;
+  window.addEventListener('beforeunload',e=>{if(workDirty()){e.preventDefault();e.returnValue='';}});
   function workClass(type){return type==='一線'?'live':type==='管制門'?'gate':type==='二線'?'rest':type==='備勤'?'standby':LEGACY_WORK_TYPES.includes(type)?'legacy':'unset'}
-  function setWorkDate(key){if(!byDate.has(key))return;workDate=key;workDraft=workEntry(key);$('workFeedback').textContent='';$('shiftOverrideFeedback').textContent='';renderWork();}
+  function setWorkDate(key){if(!byDate.has(key)||(! (workDate===key) && !confirmWorkExit()))return false;workDate=key;workDraft=workEntry(key);$('workFeedback').textContent='';$('shiftOverrideFeedback').textContent='';renderWork();return true;}
   function renderWork(){
     const item=byDate.get(workDate);if(!item)return;
     $('workDate').value=workDate;
@@ -478,10 +593,13 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
     $('shiftOverrideReset').hidden=!shiftOverrides[workDate];
     $('workEditor').hidden=blocked;
     if(blocked)return;
+    if(leaveMinutes(workDate))$('workShiftInfo').textContent+=`｜已請假 ${leaveHoursLabel(workDate)} 小時`;
     document.querySelectorAll('[data-offset]').forEach(b=>{const active=Number(b.dataset.offset)===workDraft.offset;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
     document.querySelectorAll('[data-work-type]').forEach(b=>{const active=b.dataset.workType===selectedWorkType;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
     const [base]=baseWorkTimes(kind),start=clockMinutes(base)+workDraft.offset*60;
     $('workTimeResult').textContent=`${clockString(start)}–${clockString(start+480)}（8 小時）`;
+    $('workFeedback').textContent=workDirty()?'尚未儲存勤務修改，請按「儲存勤務安排」':'';
+    $('workFeedback').classList.toggle('unsaved-work',workDirty());
     const root=$('workSlots');root.replaceChildren();
     workDraft.slots.forEach((type,i)=>{const b=document.createElement('button');b.type='button';b.className='work-slot '+workClass(type);
       b.innerHTML=`<strong>${clockString(start+i*60)}–${clockString(start+(i+1)*60)}</strong><span class="type-label">${LEGACY_WORK_TYPES.includes(type)?'舊版：'+type+'（請重新分類）':type||'未設定'}</span>`;
@@ -493,6 +611,8 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   function changeDayShift(choice){
     const item=byDate.get(workDate);if(!item||item.s==='off')return;
     if(!['early','late'].includes(choice))return;
+    if(!confirmWorkExit())return;
+    if(!canUseLeaveInShift(workDate,choice,0)){alert('已有請假時段不在新班別內，請先到假勤修改或刪除該筆請假，再調整班別。');return;}
     const before=actualShift(item);
     if(choice===item.s)delete shiftOverrides[workDate];else shiftOverrides[workDate]=choice;
     if(before!==choice){ // preserve hourly categories, but restore neutral time offset for the changed shift
@@ -503,16 +623,16 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   }
   document.querySelectorAll('[data-shift-choice]').forEach(b=>b.onclick=()=>changeDayShift(b.dataset.shiftChoice));
   $('shiftOverrideReset').onclick=()=>{const item=byDate.get(workDate);if(item&&item.s!=='off')changeDayShift(item.s)};
-  $('workDate').addEventListener('change',e=>{if(!byDate.has(e.target.value)){e.target.value=workDate;return}setWorkDate(e.target.value)});
-  document.querySelectorAll('[data-offset]').forEach(b=>b.onclick=()=>{workDraft.offset=Number(b.dataset.offset);$('workFeedback').textContent='';renderWork()});
+  $('workDate').addEventListener('change',e=>{if(!byDate.has(e.target.value)||!setWorkDate(e.target.value))e.target.value=workDate;});
+  document.querySelectorAll('[data-offset]').forEach(b=>b.onclick=()=>{const offset=Number(b.dataset.offset),kind=actualShift(byDate.get(workDate));if(!canUseLeaveInShift(workDate,kind,offset)){alert('目前請假時段與新上下班時間不符，請先修改請假時段。');return;}workDraft.offset=offset;renderWork()});
   document.querySelectorAll('[data-work-type]').forEach(b=>b.onclick=()=>{selectedWorkType=b.dataset.workType;renderWork()});
   $('workSave').onclick=()=>{const item=byDate.get(workDate);if(!item||actualShift(item)==='off'||fullLeave(workDate))return;
     if(workDraft.offset===0&&workDraft.slots.every(x=>!x))delete work[workDate];else work[workDate]={offset:workDraft.offset,slots:[...workDraft.slots]};
-    persist();render();$('workFeedback').textContent=`${workDate} 的勤務時間與分配已儲存。`;
+    persist();render();$('workFeedback').classList.remove('unsaved-work');$('workFeedback').textContent=`${workDate} 的勤務時間與分配已儲存。`;
   };
   $('workReset').onclick=()=>{workDraft={offset:0,slots:Array(8).fill('')};renderWork();$('workFeedback').textContent='已恢復表單預設，請按「儲存勤務安排」才會寫入。'};
   document.querySelectorAll('[data-work-day]').forEach(b=>b.onclick=()=>{const now=new Date(),date=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(b.dataset.workDay==='tomorrow'?1:0));const key=`${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
-    setWorkDate(key);document.querySelector('[data-tab="work"]').click();});
+    if(setWorkDate(key))document.querySelector('[data-tab="work"]').click();});
 
 
   $('dutyDate').addEventListener('change',e=>{
@@ -564,7 +684,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   const localNow=()=>{const d=new Date();return {date:`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,time:`${pad(d.getHours())}:${pad(d.getMinutes())}`}};
   const uniqueId=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2);
   function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-  function shiftDefaults(date){const item=byDate.get(date);const kind=item?actualShift(item):'off';return kind==='early'?['06:00','14:00']:kind==='late'?['10:00','18:00']:['09:00','17:00']}
+  function shiftDefaults(date){const time=timesFor(date);return time?[clockString(time.start),clockString(time.end)]:['09:00','17:00']}
   function syncSelection(key){if(!editLeave){$('leaveDate').value=key;const [a,b]=shiftDefaults(key);$('leaveStart').value=a;$('leaveEnd').value=b}if(!editNote)$('noteDate').value=key;renderRecords()}
   function renderRecords(){
     const l=leaves.filter(x=>x.date===selected).sort((a,b)=>a.start.localeCompare(b.start));
@@ -576,13 +696,34 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   }
   function resetLeave(){editLeave=null;$('leaveForm').reset();$('leaveDate').value=selected;const [a,b]=shiftDefaults(selected);$('leaveStart').value=a;$('leaveEnd').value=b;$('leaveSubmit').textContent='儲存假單紀錄'}
   function resetNote(){editNote=null;$('noteForm').reset();$('noteDate').value=selected;$('noteTime').value=localNow().time;$('noteSubmit').textContent='儲存手札'}
-  $('leaveForm').onsubmit=e=>{e.preventDefault();const date=$('leaveDate').value,startTime=$('leaveStart').value,endTime=$('leaveEnd').value;if(endTime<=startTime){alert('結束時間必須晚於開始時間');return}const entry={id:editLeave||uniqueId(),date,type:$('leaveType').value,start:startTime,end:endTime,memo:$('leaveMemo').value.trim()};if(editLeave)leaves=leaves.map(x=>x.id===editLeave?entry:x);else leaves.push(entry);persist();resetLeave();render()};
+  $('leaveForm').onsubmit=e=>{
+    e.preventDefault();const date=$('leaveDate').value,startTime=$('leaveStart').value,endTime=$('leaveEnd').value;
+    const item=byDate.get(date),time=timesFor(date);
+    if(!item||actualShift(item)==='off'){alert('休假日不可登記請假，若有銷假上班請先登記銷假。');return;}
+    if(!time){alert('找不到該日期的工作時間');return;}
+    if(endTime<=startTime){alert('結束時間必須晚於開始時間');return;}
+    if(clockMinutes(startTime)<time.start||clockMinutes(endTime)>time.end){alert(`請假時間須落在當天實際班別 ${time.label} 內。`);return;}
+    if(leaves.some(x=>x.date===date&&x.id!==editLeave&&startTime<x.end&&endTime>x.start)){
+      alert('請假時段與當日既有紀錄重疊，請先修改原紀錄。');return;
+    }
+    const entry={id:editLeave||uniqueId(),date,type:$('leaveType').value,start:startTime,end:endTime,memo:$('leaveMemo').value.trim()};
+    if(editLeave)leaves=leaves.map(x=>x.id===editLeave?entry:x);else leaves.push(entry);
+    persist();resetLeave();render();
+  };
   $('noteForm').onsubmit=e=>{e.preventDefault();const entry={id:editNote||uniqueId(),date:$('noteDate').value,time:$('noteTime').value,category:$('noteCategory').value,text:$('noteText').value.trim()};if(!entry.text)return;if(editNote)notes=notes.map(x=>x.id===editNote?entry:x);else notes.push(entry);persist();resetNote();render()};
   $('leaveReset').onclick=resetLeave;$('noteReset').onclick=resetNote;$('noteFilter').addEventListener('change',renderRecords);$('noteSearch').addEventListener('input',renderRecords);
-  $('backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify({version:8,exportedAt:new Date().toISOString(),leaves,notes,terminals,cancelled,quotas,work,shiftOverrides},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班日曆_含銷假備份.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
-  $('restoreFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text());if(!Array.isArray(payload.leaves)||!Array.isArray(payload.notes))throw Error('格式不符合');if(!confirm('匯入將取代此裝置目前的請假、手札、航廈、銷假及月額度資料，確定繼續？'))return;cancelled={};quotas={};work={};shiftOverrides={};if(payload.shiftOverrides&&typeof payload.shiftOverrides==='object'&&!Array.isArray(payload.shiftOverrides)){for(const [day,val] of Object.entries(payload.shiftOverrides)){if(byDate.has(day)&&byDate.get(day).s!=='off'&&['early','late'].includes(val)&&val!==byDate.get(day).s)shiftOverrides[day]=val}}if(payload.cancelled&&typeof payload.cancelled==='object'&&!Array.isArray(payload.cancelled)){for(const [day,val] of Object.entries(payload.cancelled)){if(byDate.get(day)?.s==='off'&&['early','late'].includes(val?.shift))cancelled[day]={shift:val.shift}}}if(payload.quotas&&typeof payload.quotas==='object'&&!Array.isArray(payload.quotas)){for(const [key,val] of Object.entries(payload.quotas)){if(/^\d{4}-\d{2}$/.test(key)&&Number.isInteger(val)&&val>=0&&val<=31)quotas[key]=val}}terminals={};if(payload.terminals&&typeof payload.terminals==='object'&&!Array.isArray(payload.terminals)){for(const [day,val] of Object.entries(payload.terminals)){if(byDate.has(day)&&actualShift(byDate.get(day))!=='off'&&['一航','二航'].includes(val))terminals[day]=val}}leaves=payload.leaves.filter(x=>x&&typeof x.date==='string'&&typeof x.type==='string');notes=payload.notes.filter(x=>x&&typeof x.date==='string'&&typeof x.text==='string');if(payload.work&&typeof payload.work==='object'&&!Array.isArray(payload.work)){for(const [day,val] of Object.entries(payload.work)){if(byDate.has(day)&&actualShift(byDate.get(day))!=='off'&&val&&typeof val==='object')work[day]=val;}}cleanWork();setWorkDate(workDate);persist();resetLeave();resetNote();render();alert('已成功匯入備份')}catch{alert('檔案格式錯誤，請選擇本網站匯出的 JSON 備份')}finally{e.target.value=''}};
+  $('noteExport').onclick=()=>{
+    const category=$('noteFilter').value,query=$('noteSearch').value.trim().toLowerCase();
+    const selection=notes.filter(x=>(category==='all'||(x.category||'未分類')===category)&&(!query||[x.text,x.date,x.category||'未分類'].join(' ').toLowerCase().includes(query))).sort((a,b)=>(a.date+' '+a.time).localeCompare(b.date+' '+b.time));
+    if(!selection.length){alert('目前篩選沒有可匯出的手札');return;}
+    const text='勤務手札｜'+(category==='all'?'全部分類':category)+'\n匯出日期：'+new Date().toLocaleString('zh-TW')+'\n\n'+selection.map(n=>`【${n.date} ${n.time}｜${n.category||'未分類'}】\n${n.text}`).join('\n\n---\n\n');
+    const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='勤務手札_'+(category==='all'?'全部分類':category)+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  };
+  $('backupBtn').onclick=()=>{const blob=new Blob([JSON.stringify({version:8,exportedAt:new Date().toISOString(),leaves,notes,terminals,cancelled,quotas,work,shiftOverrides,returnHour},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='我的輪班日曆_含銷假備份.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000)};
+  $('restoreFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text());if(!Array.isArray(payload.leaves)||!Array.isArray(payload.notes))throw Error('格式不符合');if(!confirm('匯入將取代此裝置目前的請假、手札、航廈、銷假及月額度資料，確定繼續？'))return;cancelled={};quotas={};work={};shiftOverrides={};returnHour=[18,19,20,21].includes(Number(payload.returnHour))?Number(payload.returnHour):20;$('returnHour').value=String(returnHour);if(payload.shiftOverrides&&typeof payload.shiftOverrides==='object'&&!Array.isArray(payload.shiftOverrides)){for(const [day,val] of Object.entries(payload.shiftOverrides)){if(byDate.has(day)&&byDate.get(day).s!=='off'&&['early','late'].includes(val)&&val!==byDate.get(day).s)shiftOverrides[day]=val}}if(payload.cancelled&&typeof payload.cancelled==='object'&&!Array.isArray(payload.cancelled)){for(const [day,val] of Object.entries(payload.cancelled)){if(byDate.get(day)?.s==='off'&&['early','late'].includes(val?.shift))cancelled[day]={shift:val.shift}}}if(payload.quotas&&typeof payload.quotas==='object'&&!Array.isArray(payload.quotas)){for(const [key,val] of Object.entries(payload.quotas)){if(/^\d{4}-\d{2}$/.test(key)&&Number.isInteger(val)&&val>=0&&val<=31)quotas[key]=val}}terminals={};if(payload.terminals&&typeof payload.terminals==='object'&&!Array.isArray(payload.terminals)){for(const [day,val] of Object.entries(payload.terminals)){if(byDate.has(day)&&actualShift(byDate.get(day))!=='off'&&['一航','二航'].includes(val))terminals[day]=val}}leaves=payload.leaves.filter(x=>x&&typeof x.date==='string'&&typeof x.type==='string');notes=payload.notes.filter(x=>x&&typeof x.date==='string'&&typeof x.text==='string');if(payload.work&&typeof payload.work==='object'&&!Array.isArray(payload.work)){for(const [day,val] of Object.entries(payload.work)){if(byDate.has(day)&&actualShift(byDate.get(day))!=='off'&&val&&typeof val==='object')work[day]=val;}}cleanWork();setWorkDate(workDate);persist();resetLeave();resetNote();render();alert('已成功匯入備份')}catch{alert('檔案格式錯誤，請選擇本網站匯出的 JSON 備份')}finally{e.target.value=''}};
   cleanOffTerminals();resetLeave();resetNote();setWorkDate(workDate);
 
+  document.getElementById('returnHour').value=String(returnHour);
   const currentItem=byDate.get(currentIso);if(currentItem){month=months.findIndex(([y,m])=>y===currentItem.d.getUTCFullYear()&&m===currentItem.d.getUTCMonth());}render();
 })();
 </script>
@@ -591,6 +732,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   const nav=document.querySelector('.app-tabs');
   if(!nav)return;
   const go=(name)=>{
+    if(name!=='work'&&document.querySelector('[data-view="work"]:not([hidden])')&&window.ShiftWorkGuard&&!window.ShiftWorkGuard())return;
     document.querySelectorAll('.tab-view').forEach(view=>view.hidden=view.dataset.view!==name);
     nav.querySelectorAll('[data-tab]').forEach(btn=>{const active=btn.dataset.tab===name;btn.classList.toggle('active',active);if(active)btn.setAttribute('aria-current','page');else btn.removeAttribute('aria-current');});
     const selected=document.getElementById('selectedDate')?.textContent||'—';
@@ -620,110 +762,183 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 <script>
 (()=>{
   'use strict';
-  const $=id=>document.getElementById(id), bridge=window.ShiftCalendarCloud;
-  const status=$('cloudStatus'),badge=$('cloudBadge'),login=$('cloudLogin'),logout=$('cloudLogout'),choices=$('cloudChoices');
+  const $=id=>document.getElementById(id),bridge=window.ShiftCalendarCloud;
+  const status=$('cloudStatus'),badge=$('cloudBadge'),header=$('headerCloudStatus'),login=$('cloudLogin'),logout=$('cloudLogout'),choices=$('cloudChoices');
   const upload=$('cloudUpload'),download=$('cloudDownload'),msg=$('cloudChoiceMessage');
-  const setStatus=(label,detail)=>{badge.textContent=label;status.textContent=detail};
+  const setStatus=(label,detail)=>{badge.textContent=label;header.textContent='雲端：'+label;status.textContent=detail;};
   const cfg=window.SHIFT_FIREBASE_CONFIG;
   if(!bridge||!cfg?.apiKey||!cfg?.projectId||String(cfg.apiKey).startsWith('請填入')||!window.firebase){
-    login.disabled=true;setStatus('尚未啟用','請先建立 Firebase 專案，填寫 firebase-config.js 並上傳 GitHub。未啟用時仍可正常使用本機班表。');return;
+    login.disabled=true;setStatus('尚未啟用','請確認 firebase-config.js 已放在網站相同目錄。未連線時資料仍保存在本機。');return;
   }
-  let app,auth,db,user=null,docRef=null,syncReady=false,busy=false,pending=false,saveTimer=null,chain=Promise.resolve(),revision=0;
+  let auth,db,user=null,base=null,syncReady=false,pending=false,busy=false,saveTimer=null,chain=Promise.resolve(),syncConflict=false;
+  const categories=['leaves','notes','terminals','cancelled','quotas','work','shiftOverrides','returnHour'];
+  const names={leaves:'請假',notes:'手札',terminals:'航廈',cancelled:'銷假',quotas:'應休',work:'勤務',shiftOverrides:'調班',returnHour:'收假設定'};
+  const versions={},dirty=new Set();
   const savedUserKey='shift-cloud-account';
-  // Header follows the Firebase Google account and never persists the name separately.
-  const updateCalendarTitle=u=>{
-    const name=typeof u?.displayName==='string'?u.displayName.trim():'';
-    const title=document.getElementById('personalCalendarTitle');
-    if(title)title.textContent=name?`${name}的勤務列表`:'我的勤務列表';
-  };
+  const legacyUnsynced='shift-cloud-unsynced';
+  const updateCalendarTitle=u=>{const name=typeof u?.displayName==='string'?u.displayName.trim():'';$('personalCalendarTitle').textContent=name?`${name}的勤務列表`:'我的勤務列表';};
   const errorText=e=>({
-    'auth/unauthorized-domain':'請到 Firebase Authentication 將你的 github.io 網域加入已授權網域。',
-    'auth/popup-blocked':'瀏覽器封鎖了登入視窗，請允許彈出視窗後再試。',
-    'permission-denied':'Firestore 安全規則拒絕存取，請確認已發布正確規則。'
+    'auth/unauthorized-domain':'請到 Firebase Authentication 的已授權網域新增你的 GitHub Pages 網域。',
+    'auth/operation-not-allowed':'請先到 Firebase Authentication → Sign-in method 啟用 Google 登入。',
+    'auth/popup-blocked':'登入視窗遭封鎖，請允許彈出視窗。',
+    'permission-denied':'Firestore 規則拒絕存取。新版需先發布 v9 安全規則，開放 part-* 和 sync-meta 文件。',
+    'failed-precondition':'雲端資料版本已變更，請先備份本機紀錄並選擇資料來源。',
+    'unavailable':'暫時無法連線到 Firebase；本機資料仍然保留。'
   }[e?.code]||e?.message||'未知錯誤');
-  try{
-    app=firebase.initializeApp(cfg);auth=firebase.auth();db=firebase.firestore();
-    auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
-  }catch(e){login.disabled=true;setStatus('設定失敗',errorText(e));return;}
-  async function writeCloud(){
-    if(!user||!syncReady||!docRef)return;
-    const snap=JSON.parse(JSON.stringify(bridge.snapshot()));
-    const writingRevision=revision;
-    busy=true;setStatus('同步中',`${user.email||'已登入'} · 正在儲存資料`);
-    await docRef.set({payload:snap,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),schema:8});
-    busy=false;
-    if(revision===writingRevision){localStorage.removeItem('shift-cloud-unsynced');setStatus('已同步',`已將資料儲存至雲端 · ${new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})}`)}
-    else{setStatus('同步中','偵測到新的變更，繼續儲存…');scheduleWrite();}
+  try{firebase.initializeApp(cfg);auth=firebase.auth();db=firebase.firestore();auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});}catch(e){login.disabled=true;setStatus('設定失敗',errorText(e));return;}
+  const part=k=>base.doc('part-'+k);
+  const meta=()=>base.doc('sync-meta');
+  const main=()=>base.doc('main');
+  const now=()=>new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+  function markClean(){localStorage.setItem(savedUserKey,user.uid);localStorage.removeItem(legacyUnsynced);dirty.clear();syncConflict=false;pending=false;syncReady=true;choices.hidden=true;setStatus('已同步','已同步到 Firebase · '+now());}
+  async function readRemote(){
+    const marker=await meta().get({source:'server'});
+    if(marker.exists&&marker.data()?.ready===true){
+      const docs=await Promise.all(categories.map(k=>part(k).get({source:'server'})));
+      const payload={},remoteVersions={};
+      categories.forEach((k,i)=>{
+        if(!docs[i].exists)throw new Error(`雲端資料不完整：${names[k]} 文件不存在。為避免覆蓋資料，請先保留本機備份。`);
+        payload[k]=docs[i].data().value;
+        remoteVersions[k]=Number(docs[i].data().version)||0;
+      });
+      return {source:'parts',payload,versions:remoteVersions};
+    }
+    const old=await main().get({source:'server'});
+    return {source:'legacy',payload:old.exists?old.data()?.payload:null};
   }
-  function scheduleWrite(){
-    if(!syncReady||!user)return;
-    pending=true;clearTimeout(saveTimer);
-    saveTimer=setTimeout(()=>{
-      if(!syncReady||!user)return;
-      pending=false;
-      chain=chain.catch(()=>{}).then(writeCloud).catch(e=>{busy=false;pending=true;setStatus('同步失敗',`仍保留本機紀錄，請稍後重試：${errorText(e)}`)});
-    },700);
+  async function writeAll(payload){
+    // The migration is atomic: the original calendar/main stays untouched for rollback.
+    const existing=await Promise.all(categories.map(k=>part(k).get({source:'server'})));
+    const batch=db.batch(),newVersions={};
+    categories.forEach((k,i)=>{
+      newVersions[k]=(Number(existing[i].data()?.version)||0)+1;
+      batch.set(part(k),{value:JSON.parse(JSON.stringify(payload[k])),version:newVersions[k],updatedAt:firebase.firestore.FieldValue.serverTimestamp(),schema:9});
+    });
+    batch.set(meta(),{ready:true,schema:9,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await batch.commit();
+    Object.assign(versions,newVersions);
   }
-  window.addEventListener('shift:local-change',()=>{revision++;scheduleWrite()});
-  async function cloudToLocal(raw){
-    if(!raw||!Array.isArray(raw.leaves)||!Array.isArray(raw.notes))throw new Error('雲端資料格式不符合');
-    bridge.replaceFromCloud(raw);
-    localStorage.setItem(savedUserKey,user.uid);
-    localStorage.removeItem('shift-cloud-unsynced');
-    syncReady=true;choices.hidden=true;
-    setStatus('已同步',`已載入 ${user.email||'帳號'} 的雲端資料，後續修改會自動同步`);
+  async function useRemote(remote){
+    if(!remote?.payload||!Array.isArray(remote.payload.leaves)||!Array.isArray(remote.payload.notes))throw Error('雲端資料格式不符合');
+    if(remote.source==='legacy'){
+      setStatus('升級中','正在將舊雲端資料分開儲存，舊版 main 文件會保留…');
+      await writeAll(remote.payload);
+    }
+    if(remote.source==='parts')Object.assign(versions,remote.versions);
+    bridge.replaceFromCloud(remote.payload);
+    markClean();
   }
-  async function localToCloud(){
-    syncReady=true;choices.hidden=true;
-    try{await writeCloud();localStorage.setItem(savedUserKey,user.uid)}
+  async function uploadLocal(){
+    syncReady=false;setStatus('上傳中','正在將本機資料分別寫入 Firebase…');
+    try{const data=bridge.snapshot();await writeAll(data);markClean();}
     catch(e){syncReady=false;choices.hidden=false;setStatus('上傳失敗',errorText(e));}
   }
-  async function initializeAccount(u){
-    user=u;updateCalendarTitle(u);syncReady=false;choices.hidden=true;login.hidden=true;logout.hidden=false;
-    docRef=db.collection('users').doc(u.uid).collection('calendar').doc('main');
-    setStatus('讀取中',`已登入 ${u.email||'Google 帳號'}，正在查看雲端紀錄…`);
-    try{
-      const snap=await docRef.get({source:'server'});
-      if(auth.currentUser?.uid!==u.uid)return;
-      const remote=snap.exists?snap.data()?.payload:null;
-      const localMeaningful=bridge.hasData();
-      const hasUnsent=localStorage.getItem('shift-cloud-unsynced')==='1';
-      const sameAccount=localStorage.getItem(savedUserKey)===u.uid;
-      if(remote){
-        if(!localMeaningful||(sameAccount&&!hasUnsent)){await cloudToLocal(remote);return;}
-        msg.textContent='發現雲端與本機紀錄。請選擇要保留哪一份；被取代的一份不會自動合併，建議先下載 JSON 備份。';
-        choices.hidden=false;
-        setStatus('請選擇資料來源','尚未開始同步，請在下方選擇上傳本機資料或使用雲端資料。');
-      }else if(localMeaningful){
-        msg.textContent='雲端目前沒有紀錄。請點「上傳此裝置的紀錄」，把原有班表設定與手札備份上去。';
-        download.disabled=true;choices.hidden=false;setStatus('待首次上傳','本機資料還沒上傳，請選擇上傳。');
-      }else{
-        syncReady=true;localStorage.setItem(savedUserKey,u.uid);localStorage.removeItem('shift-cloud-unsynced');
-        setStatus('已連線','雲端目前沒有資料，新的紀錄將自動同步。');
-      }
-    }catch(e){setStatus('連線失敗',`本機資料仍可使用。${errorText(e)}`);}
+  async function syncOne(k,value,expected){
+    const ref=part(k);
+    const newVersion=await db.runTransaction(async tx=>{
+      const doc=await tx.get(ref),actual=doc.exists?(Number(doc.data().version)||0):0;
+      if(actual!==expected){const err=new Error(`${names[k]} 的雲端版本已被其他裝置更新。自動同步已停止，以避免覆蓋資料。`);err.code='version-conflict';throw err;}
+      tx.set(ref,{value:JSON.parse(JSON.stringify(value)),version:actual+1,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),schema:9});
+      return actual+1;
+    });
+    versions[k]=newVersion;
   }
-  login.addEventListener('click',async()=>{
-    try{setStatus('登入中','正在開啟 Google 登入視窗…');await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}
-    catch(e){setStatus('登入失敗',errorText(e));}
+  async function writeDirty(){
+    if(!syncReady||!user||syncConflict||!dirty.size)return;
+    if(!navigator.onLine){pending=true;setStatus('待同步','目前離線，紀錄已保存在本機。');return;}
+    busy=true;
+    try{
+      for(const k of [...dirty]){
+        const before=JSON.parse(JSON.stringify(bridge.snapshot()[k]));
+        setStatus('同步中','正在同步：'+names[k]);
+        await syncOne(k,before,versions[k]||0);
+        if(JSON.stringify(bridge.snapshot()[k])===JSON.stringify(before))dirty.delete(k);
+      }
+      if(dirty.size){scheduleWrite();return;}
+      markClean();
+    }catch(e){
+      pending=true;
+      if(e.code==='version-conflict'){
+        syncConflict=true;syncReady=false;choices.hidden=false;download.disabled=false;
+        msg.textContent='偵測到另一裝置修改了相同類別的資料。為避免覆蓋，已停止自動同步。請先匯出本機 JSON 備份，再選擇使用哪一份紀錄。';
+        setStatus('資料衝突',errorText(e));
+      }else setStatus('同步失敗','本機資料已保留，可重新連線後再試：'+errorText(e));
+    }finally{busy=false;}
+  }
+  function scheduleWrite(){
+    if(!syncReady||!user||syncConflict)return;
+    pending=true;clearTimeout(saveTimer);
+    setStatus('待同步','本機已儲存，準備同步至 Firebase…');
+    saveTimer=setTimeout(()=>{
+      if(!syncReady||!user||syncConflict)return;
+      pending=false;
+      chain=chain.catch(()=>{}).then(writeDirty);
+    },750);
+  }
+  window.addEventListener('shift:local-change',e=>{
+    for(const k of e.detail?.keys||categories)if(categories.includes(k))dirty.add(k);
+    if(syncReady)scheduleWrite();
+    else if(user)setStatus('本機已修改','本機有尚未同步的修改，請先選擇雲端資料來源。');
   });
-  logout.addEventListener('click',async()=>{
-    if(busy||pending){setStatus('尚有未同步資料','請先確認雲端已同步再登出。');return;}
+  async function initializeAccount(u){
+    user=u;updateCalendarTitle(u);syncReady=false;syncConflict=false;choices.hidden=true;login.hidden=true;logout.hidden=false;
+    base=db.collection('users').doc(u.uid).collection('calendar');
+    setStatus('讀取中','正在檢查 Firebase 雲端紀錄…');
+    try{
+      const remote=await readRemote();
+      if(auth.currentUser?.uid!==u.uid)return;
+      const localMeaningful=bridge.hasData();
+      const hasUnsent=localStorage.getItem(legacyUnsynced)==='1';
+      const sameAccount=localStorage.getItem(savedUserKey)===u.uid;
+      if(remote.payload){
+        if(!localMeaningful||(sameAccount&&!hasUnsent)){
+          await useRemote(remote);return;
+        }
+        choices.hidden=false;download.disabled=false;
+        msg.textContent=remote.source==='legacy'?'已找到舊版雲端資料。請先下載 JSON 備份，再選擇以本機或舊版雲端紀錄搬移到新格式。':'本機與雲端均有紀錄且可能不同。請先匯出 JSON 備份，再選擇要保留哪份（不會自動合併）。';
+        setStatus('請選擇資料','為保護你的紀錄，首次登入需選擇資料來源。');
+      }else if(localMeaningful){
+        download.disabled=true;choices.hidden=false;msg.textContent='雲端目前沒有紀錄。請先下載 JSON 備份，再選擇「上傳此裝置的紀錄」。';
+        setStatus('待首次上傳','本機紀錄尚未儲存到雲端。');
+      }else{
+        await uploadLocal();
+      }
+    }catch(e){setStatus('連線失敗','本機紀錄仍保留：'+errorText(e));}
+  }
+  login.onclick=async()=>{try{setStatus('登入中','正在開啟 Google 登入視窗…');await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){setStatus('登入失敗',errorText(e));}};
+  logout.onclick=async()=>{
+    if(busy||pending||dirty.size||localStorage.getItem(legacyUnsynced)==='1'){setStatus('尚未同步','本機仍有未同步紀錄，請先同步或下載 JSON 備份再登出。');return;}
     await auth.signOut();
-  });
-  upload.addEventListener('click',()=>{if(!user)return;if(!confirm('確定用這台裝置的資料取代雲端紀錄嗎？建議先下載 JSON 備份。'))return;localToCloud()});
-  download.addEventListener('click',async()=>{
-    if(!user||!docRef)return;
-    if(!confirm('確定用雲端資料取代這台裝置的現有紀錄嗎？建議先下載 JSON 備份。'))return;
-    try{const snap=await docRef.get({source:'server'});if(!snap.exists)throw new Error('雲端尚無資料');await cloudToLocal(snap.data().payload)}
-    catch(e){setStatus('下載失敗',errorText(e));}
-  });
+  };
+  upload.onclick=async()=>{
+    if(!user||busy)return;
+    if(!confirm('「上傳此裝置的紀錄」會用本機資料取代新版雲端各類別資料。請先匯出 JSON 備份，確定繼續？'))return;
+    await uploadLocal();
+  };
+  download.onclick=async()=>{
+    if(!user||busy)return;
+    if(!confirm('「使用雲端紀錄」會取代本機紀錄。請先下載 JSON 備份，確定繼續？'))return;
+    try{setStatus('下載中','正在載入雲端紀錄…');const remote=await readRemote();await useRemote(remote)}catch(e){setStatus('下載失敗',errorText(e));}
+  };
   auth.onAuthStateChanged(u=>{
     if(u)initializeAccount(u);
-    else{updateCalendarTitle(null);user=null;docRef=null;syncReady=false;pending=false;clearTimeout(saveTimer);login.hidden=false;logout.hidden=true;choices.hidden=true;download.disabled=false;setStatus('未登入','目前僅使用本機儲存。登入 Google 後可選擇資料來源並啟用雲端同步。');}
+    else{updateCalendarTitle(null);user=null;base=null;syncReady=false;pending=false;busy=false;dirty.clear();clearTimeout(saveTimer);login.hidden=false;logout.hidden=true;choices.hidden=true;download.disabled=false;setStatus('未登入','目前使用本機儲存，登入 Google 後才能同步雲端。');}
   },e=>setStatus('驗證錯誤',errorText(e)));
-  window.addEventListener('online',()=>{if(pending||localStorage.getItem('shift-cloud-unsynced')==='1')scheduleWrite()});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&syncReady&&localStorage.getItem('shift-cloud-unsynced')==='1')scheduleWrite()});
+  async function refreshCloud(){
+    if(!user||!syncReady||busy||dirty.size||pending||syncConflict||localStorage.getItem(legacyUnsynced)==='1'||window.ShiftHasUnsavedWork?.())return;
+    try{
+      const remote=await readRemote();
+      if(remote.source!=='parts'||!remote.payload)return;
+      if(user&&syncReady&&!busy&&!dirty.size&&!window.ShiftHasUnsavedWork?.()){
+        // Refresh clean devices after an edit on another phone/computer.
+        Object.assign(versions,remote.versions);
+        bridge.replaceFromCloud(remote.payload);
+        markClean();
+      }
+    }catch(e){setStatus('刷新失敗',errorText(e));}
+  }
+  window.addEventListener('online',()=>{if(dirty.size||localStorage.getItem(legacyUnsynced)==='1'){if(dirty.size)scheduleWrite();else if(user&&!syncReady)setStatus('待確認','發現本機修改，請重新整理並選擇資料來源。');}});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(dirty.size)scheduleWrite();else refreshCloud();}});
 })();
 </script>
 </body></html>
