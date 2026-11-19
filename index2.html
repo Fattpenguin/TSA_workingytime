@@ -176,7 +176,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 .work-slots{display:flex;flex-direction:column;gap:6px;margin:14px 0}
 .work-slot{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 15px;border-radius:11px;border:1px solid var(--line);background:var(--bg);color:var(--ink);text-align:left}
 .work-slot strong{font-size:14px;font-variant-numeric:tabular-nums}.work-slot .type-label{font-weight:750;font-size:13px}
-.work-slot.live,.mini-cell.live{background:#e0f3e8;color:#14704d}.work-slot.legacy,.mini-cell.legacy,.mini-key.legacy{background:#ececf1;color:#575c71}.work-slot.standby,.mini-cell.standby{background:#e0edff;color:#24539a}.work-slot.rest,.mini-cell.rest{background:#fff0d8;color:#90540e}
+.work-slot.live,.mini-cell.live{background:#e0f3e8;color:#14704d}.work-slot.gate,.mini-cell.gate,.mini-key.gate{background:#f1e7ff;color:#6e3dac}.work-slot.legacy,.mini-cell.legacy,.mini-key.legacy{background:#ececf1;color:#575c71}.work-slot.standby,.mini-cell.standby{background:#e0edff;color:#24539a}.work-slot.rest,.mini-cell.rest{background:#fff0d8;color:#90540e}
 .work-totals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
 .work-total{border-radius:10px;background:var(--bg);padding:11px 5px;text-align:center}.work-total small{display:block;font-size:11px;color:var(--sub)}.work-total strong{font-size:19px}
 .work-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.work-feedback{font-size:13px;color:var(--sub);margin-top:10px;min-height:1.2em}
@@ -184,6 +184,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 @media(max-width:700px){.work-preset{grid-template-columns:repeat(3,minmax(0,1fr))}.work-time-result{font-size:17px}.home-duty{font-size:11px}.work-type{font-size:12px}.work-total strong{font-size:16px}}
 @media(prefers-color-scheme:dark){
  .mini-key.live,.work-slot.live,.mini-cell.live{background:#173f36;color:#8aeac3}
+ .mini-key.gate,.work-slot.gate,.mini-cell.gate{background:#3d2a59;color:#d8b9ff}
  .mini-key.standby,.work-slot.standby,.mini-cell.standby{background:#253d61;color:#b5d4ff}
  .mini-key.rest,.work-slot.rest,.mini-cell.rest{background:#493822;color:#ffe0a4}
  .mini-key.legacy,.work-slot.legacy,.mini-cell.legacy{background:#353a49;color:#d9deea}
@@ -201,7 +202,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 </style>
 </head>
 <body><main class="wrap">
-<header><div><div class="eyebrow">MY SHIFT CALENDAR · 2026–2027</div><h1>我的上班・休假日曆</h1><p class="description">2026/11/17（二）～ 2027/03/22（一）<br>晚班 10:00–18:00 ｜ 早班 06:00–14:00 ｜ 休假</p></div></header>
+<header><div><div class="eyebrow">MY SHIFT CALENDAR · 2026–2027</div><h1 id="personalCalendarTitle">我的勤務列表</h1><p class="description">早班 06:00–14:00 ｜ 晚班 10:00–18:00</p></div></header>
 <nav class="app-tabs" aria-label="主要功能">
 <button class="app-tab active" type="button" data-tab="calendar" aria-current="page"><span class="tab-icon">▦</span><span>月曆</span></button>
 <button class="app-tab" type="button" data-tab="work"><span class="tab-icon">◷</span><span>勤務</span></button>
@@ -242,9 +243,10 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
         <button class="btn" type="button" data-offset="2">延後 2h</button>
       </div>
       <div class="work-time-result" id="workTimeResult">—</div>
-      <div class="work-section-heading"><strong>每小時勤務分配</strong><span>先選一線／二線／備勤，再點下方時段</span></div>
+      <div class="work-section-heading"><strong>每小時勤務分配</strong><span>先選一線／管制門／二線／備勤，再點下方時段</span></div>
       <div class="work-type-picker" role="group" aria-label="選擇勤務種類">
         <button class="work-type active" type="button" data-work-type="一線">一線</button>
+        <button class="work-type" type="button" data-work-type="管制門">管制門</button>
         <button class="work-type" type="button" data-work-type="備勤">備勤</button>
         <button class="work-type" type="button" data-work-type="二線">二線</button>
         <button class="work-type" type="button" data-work-type="" >清除</button>
@@ -309,7 +311,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
 <div class="section-intro"><div><span class="section-kicker">SETTINGS & BACKUP</span><h2>更多工具</h2></div></div>
 <section class="summary" aria-label="班表統計"><div class="metric"><div class="t">排班天數</div><div class="n" id="total">—</div><div class="detail">含起訖日</div></div><div class="metric"><div class="t">晚班</div><div class="n" id="lateCount">—</div><div class="detail">10:00–18:00</div></div><div class="metric"><div class="t">早班</div><div class="n" id="earlyCount">—</div><div class="detail">06:00–14:00</div></div><div class="metric"><div class="t">原排休假</div><div class="n" id="offCount">—</div><div class="detail">尚未扣除銷假</div></div></section>
 
-<div class="panel" style="margin:0 0 18px"><strong>工作統計</strong><p>統計實際班別（含銷假上班）與一航、二航的分布；未設定航廈另計。</p><label class="field">統計月份<select id="statsMonth" class="stats-picker"><option value="all">完整排班期間</option><option value="2026-11">2026 年 11 月</option><option value="2026-12">2026 年 12 月</option><option value="2027-01">2027 年 1 月</option><option value="2027-02">2027 年 2 月</option><option value="2027-03">2027 年 3 月</option></select></label><div id="statsResults" class="stats-grid"></div><div id="workStats" class="stats-grid work-stats"></div><p class="work-stats-note">勤務內容分為一線、二線、備勤；未設定不計入上述時數。舊版的「執勤／休息」紀錄會保留並獨立列出，請依實際勤務重新分類。</p></div>
+<div class="panel" style="margin:0 0 18px"><strong>工作統計</strong><p>統計實際班別（含銷假上班）與一航、二航的分布；未設定航廈另計。</p><label class="field">統計月份<select id="statsMonth" class="stats-picker"><option value="all">完整排班期間</option><option value="2026-11">2026 年 11 月</option><option value="2026-12">2026 年 12 月</option><option value="2027-01">2027 年 1 月</option><option value="2027-02">2027 年 2 月</option><option value="2027-03">2027 年 3 月</option></select></label><div id="statsResults" class="stats-grid"></div><div id="workStats" class="stats-grid work-stats"></div><p class="work-stats-note">勤務內容分為一線、管制門、二線、備勤；未設定不計入上述時數。舊版的「執勤／休息」紀錄會保留並獨立列出，請依實際勤務重新分類。</p></div>
 <div class="panel" style="margin:0 0 18px"><strong>行事曆匯出</strong><p>將班表下載為 .ics，匯入 Google、Apple 或 Outlook 行事曆。</p><button class="btn primary" id="icsBtn" type="button">匯出到行事曆 .ics</button></div>
 <section class="panel cloud-panel" aria-label="雲端同步" style="margin:0 0 18px">
   <div class="cloud-heading"><strong>Firebase 雲端同步</strong><span id="cloudBadge" class="cloud-badge">尚未設定</span></div>
@@ -344,7 +346,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   const calendarRoot=document.getElementById('calendars');
   const shiftNames={late:'晚班',early:'早班',off:'休假'}, shiftTimes={late:'10:00–18:00',early:'06:00–14:00',off:'全天休假'};
   function actualShift(item){return item.s==='off'?(cancelled[item.iso]?.shift||'off'):(shiftOverrides[item.iso]||item.s)}
-  const WORK_TYPES=['一線','二線','備勤'];
+  const WORK_TYPES=['一線','管制門','二線','備勤'];
   const LEGACY_WORK_TYPES=['執勤','休息']; // 保留舊資料，不擅自轉換成一線或二線
   const ALL_WORK_TYPES=[...WORK_TYPES,...LEGACY_WORK_TYPES];
   function fullLeave(key){
@@ -358,7 +360,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   function workEntry(key){const raw=work[key]||{};const offset=Number.isInteger(raw.offset)&&raw.offset>=-2&&raw.offset<=2?raw.offset:0;const slots=Array.isArray(raw.slots)&&raw.slots.length===8?raw.slots.map(t=>ALL_WORK_TYPES.includes(t)?t:''):Array(8).fill('');return {offset,slots};}
   function timesFor(key){const item=byDate.get(key);if(!item||actualShift(item)==='off')return null;const [a]=baseWorkTimes(actualShift(item));const start=clockMinutes(a)+workEntry(key).offset*60;return {start,end:start+480,label:`${clockString(start)}–${clockString(start+480)}`};}
   function cleanWork(){for(const key of Object.keys(work)){const item=byDate.get(key);if(!item||actualShift(item)==='off'){delete work[key];continue;}const entry=workEntry(key);if(entry.offset===0&&entry.slots.every(x=>!x))delete work[key];else work[key]=entry;}}
-  function workSummary(key){const entry=workEntry(key),count={'一線':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};for(const type of entry.slots)count[type||'未設定']++;return count;}
+  function workSummary(key){const entry=workEntry(key),count={'一線':0,'管制門':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};for(const type of entry.slots)count[type||'未設定']++;return count;}
 
   function showDetails(key){selected=key;const item=byDate.get(key);if(!item)return;const effective=actualShift(item),isCancelled=item.s==='off'&&!!cancelled[key];document.getElementById('selectedDate').textContent=fmt(item.d);document.getElementById('selectedDesc').textContent=isCancelled?`原排休假 → 銷假上班 ${timesFor(key)?.label||shiftTimes[effective]}（8 小時）`:effective==='off'?'今天不用上班，好好休息！':`工作時間 ${timesFor(key)?.label||shiftTimes[effective]}（8 小時）`;const tag=document.getElementById('selectedTag');tag.className='tag '+(isCancelled?'cancelled':effective);tag.textContent=isCancelled?`銷假・${shiftNames[effective]}`:shiftOverrides[key]?`調班・${shiftNames[effective]}`:shiftNames[effective];const terminalPicker=document.getElementById('terminalSelect');terminalPicker.disabled=effective==='off';terminalPicker.value=effective==='off'?'':terminals[key]||'';terminalPicker.title=effective==='off'?'休假日不可設定航廈；請先至假勤登記銷假上班。':'設定工作航廈';document.getElementById('dutyDate').value=key;document.getElementById('dutyShiftSummary').textContent=`${fmt(item.d)}｜原排${shiftNames[item.s]}${isCancelled?'，已銷假':''}`;document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));document.querySelectorAll(`[data-date="${key}"]`).forEach(el=>el.classList.add('selected'));$('cancelShift').value=cancelled[key]?.shift||'early';$('cancelTerminal').value=terminals[key]||'';$('cancelInfo').textContent=item.s==='off'?(isCancelled?'這一天已銷假上班，可修改班別或撤銷。':'這一天原排休假，可選擇銷假上班。'):'這一天原排上班，無須銷假。';$('cancelShift').disabled=item.s!=='off';$('cancelTerminal').disabled=item.s!=='off';$('cancelSave').disabled=item.s!=='off';$('cancelSave').textContent=isCancelled?'更新銷假上班':'登記銷假上班';$('cancelRemove').hidden=!isCancelled;if(typeof syncSelection==='function')syncSelection(key);if(typeof renderWork==='function')renderWork();}
   function makeMonth(y,m,index){
@@ -421,7 +423,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   function renderStats(){
     const choice=$('statsMonth')?.value||'all';const items=data.filter(x=>choice==='all'||x.iso.startsWith(choice));
     const count={early:0,late:0,off:0,t1:0,t2:0,unknown:0,cancel:0};
-    const hours={'一線':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};let adjusted=0,daysWithSchedule=0;
+    const hours={'一線':0,'管制門':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};let adjusted=0,daysWithSchedule=0;
     for(const x of items){const sh=actualShift(x);count[sh]++;if(x.s==='off'&&sh!=='off')count.cancel++;
       if(sh!=='off'){
         if(terminals[x.iso]==='一航')count.t1++;else if(terminals[x.iso]==='二航')count.t2++;else count.unknown++;
@@ -432,7 +434,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
     }
     const cards=[['早班',count.early],['晚班',count.late],['實際休假',count.off],['銷假上班',count.cancel],['一航勤務',count.t1],['二航勤務',count.t2],['航廈未設定',count.unknown],['排定勤務時數',(count.early+count.late)*8+' 小時']];
     $('statsResults').innerHTML=cards.map(([name,n])=>`<div class="stats-card"><small>${name}</small><strong>${n}</strong></div>`).join('');
-    const hoursCards=[['一線時數',hours['一線']],['二線時數',hours['二線']],['備勤時數',hours.備勤],['舊版執勤（待分類）時數',hours.執勤],['舊版休息（待分類）時數',hours.休息],['尚未設定時數',hours.未設定],['班別更改天數',items.filter(x=>!!shiftOverrides[x.iso]).length],['彈性調整天數',adjusted],['已有勤務分配天數',daysWithSchedule]];
+    const hoursCards=[['一線時數',hours['一線']],['管制門時數',hours['管制門']],['二線時數',hours['二線']],['備勤時數',hours.備勤],['舊版執勤（待分類）時數',hours.執勤],['舊版休息（待分類）時數',hours.休息],['尚未設定時數',hours.未設定],['班別更改天數',items.filter(x=>!!shiftOverrides[x.iso]).length],['彈性調整天數',adjusted],['已有勤務分配天數',daysWithSchedule]];
     $('workStats').innerHTML=hoursCards.map(([name,n])=>`<div class="stats-card"><small>${name}</small><strong>${n}${name.includes('時數')?' 小時':' 天'}</strong></div>`).join('');
   }
   function renderTomorrow(){
@@ -451,7 +453,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
       if(!hasAny){summary.textContent='尚未設定勤務分配';return;}
       if(isToday){
         const strip=document.createElement('div');strip.className='mini-strip';
-        entry.slots.forEach((type,i)=>{const span=document.createElement('span');span.className='mini-cell '+workClass(type);span.textContent=type?(LEGACY_WORK_TYPES.includes(type)?'舊':type[0]):'—';span.title=`${clockString(timesFor(key).start+i*60)}–${clockString(timesFor(key).start+(i+1)*60)} ${type||'未設定'}`;strip.append(span)});
+        entry.slots.forEach((type,i)=>{const span=document.createElement('span');span.className='mini-cell '+workClass(type);span.textContent=type?(LEGACY_WORK_TYPES.includes(type)?'舊':type==='管制門'?'門':type[0]):'—';span.title=`${clockString(timesFor(key).start+i*60)}–${clockString(timesFor(key).start+(i+1)*60)} ${type||'未設定'}`;strip.append(span)});
         summary.append(strip);
       }
       const mini=document.createElement('div');mini.className='work-mini-summary';
@@ -464,7 +466,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   const $=id=>document.getElementById(id);
   let workDate=byDate.has(currentIso)?currentIso:data[0].iso;
   let workDraft={offset:0,slots:Array(8).fill('')},selectedWorkType='一線';
-  function workClass(type){return type==='一線'?'live':type==='二線'?'rest':type==='備勤'?'standby':LEGACY_WORK_TYPES.includes(type)?'legacy':'unset'}
+  function workClass(type){return type==='一線'?'live':type==='管制門'?'gate':type==='二線'?'rest':type==='備勤'?'standby':LEGACY_WORK_TYPES.includes(type)?'legacy':'unset'}
   function setWorkDate(key){if(!byDate.has(key))return;workDate=key;workDraft=workEntry(key);$('workFeedback').textContent='';$('shiftOverrideFeedback').textContent='';renderWork();}
   function renderWork(){
     const item=byDate.get(workDate);if(!item)return;
@@ -485,7 +487,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
       b.innerHTML=`<strong>${clockString(start+i*60)}–${clockString(start+(i+1)*60)}</strong><span class="type-label">${LEGACY_WORK_TYPES.includes(type)?'舊版：'+type+'（請重新分類）':type||'未設定'}</span>`;
       b.setAttribute('aria-label',`${clockString(start+i*60)} 至 ${clockString(start+(i+1)*60)}，${type||'未設定'}，點擊修改`);
       b.onclick=()=>{workDraft.slots[i]=selectedWorkType;renderWork()};root.append(b)});
-    const ct={'一線':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};workDraft.slots.forEach(type=>ct[type||'未設定']++);
+    const ct={'一線':0,'管制門':0,'二線':0,'備勤':0,'執勤':0,'休息':0,'未設定':0};workDraft.slots.forEach(type=>ct[type||'未設定']++);
     $('workTotals').innerHTML=Object.entries(ct).filter(([name,n])=>!LEGACY_WORK_TYPES.includes(name)||n>0).map(([name,n])=>`<div class="work-total"><small>${LEGACY_WORK_TYPES.includes(name)?'舊版'+name:name}</small><strong>${n}h</strong></div>`).join('');
   }
   function changeDayShift(choice){
@@ -628,6 +630,12 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   }
   let app,auth,db,user=null,docRef=null,syncReady=false,busy=false,pending=false,saveTimer=null,chain=Promise.resolve(),revision=0;
   const savedUserKey='shift-cloud-account';
+  // Header follows the Firebase Google account and never persists the name separately.
+  const updateCalendarTitle=u=>{
+    const name=typeof u?.displayName==='string'?u.displayName.trim():'';
+    const title=document.getElementById('personalCalendarTitle');
+    if(title)title.textContent=name?`${name}的勤務列表`:'我的勤務列表';
+  };
   const errorText=e=>({
     'auth/unauthorized-domain':'請到 Firebase Authentication 將你的 github.io 網域加入已授權網域。',
     'auth/popup-blocked':'瀏覽器封鎖了登入視窗，請允許彈出視窗後再試。',
@@ -671,7 +679,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
     catch(e){syncReady=false;choices.hidden=false;setStatus('上傳失敗',errorText(e));}
   }
   async function initializeAccount(u){
-    user=u;syncReady=false;choices.hidden=true;login.hidden=true;logout.hidden=false;
+    user=u;updateCalendarTitle(u);syncReady=false;choices.hidden=true;login.hidden=true;logout.hidden=false;
     docRef=db.collection('users').doc(u.uid).collection('calendar').doc('main');
     setStatus('讀取中',`已登入 ${u.email||'Google 帳號'}，正在查看雲端紀錄…`);
     try{
@@ -712,7 +720,7 @@ header h1{font-size:27px}.section-intro{margin-top:17px}.summary{grid-template-c
   });
   auth.onAuthStateChanged(u=>{
     if(u)initializeAccount(u);
-    else{user=null;docRef=null;syncReady=false;pending=false;clearTimeout(saveTimer);login.hidden=false;logout.hidden=true;choices.hidden=true;download.disabled=false;setStatus('未登入','目前僅使用本機儲存。登入 Google 後可選擇資料來源並啟用雲端同步。');}
+    else{updateCalendarTitle(null);user=null;docRef=null;syncReady=false;pending=false;clearTimeout(saveTimer);login.hidden=false;logout.hidden=true;choices.hidden=true;download.disabled=false;setStatus('未登入','目前僅使用本機儲存。登入 Google 後可選擇資料來源並啟用雲端同步。');}
   },e=>setStatus('驗證錯誤',errorText(e)));
   window.addEventListener('online',()=>{if(pending||localStorage.getItem('shift-cloud-unsynced')==='1')scheduleWrite()});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden&&syncReady&&localStorage.getItem('shift-cloud-unsynced')==='1')scheduleWrite()});
